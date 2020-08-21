@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<HBox fx:id="mainHBox" prefHeight="550.0" prefWidth="220.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ui.ConfigController">
+   <children>
+      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="215.0" style="-fx-background-color: #dddddd;">
+         <children>
+            <HBox>
+               <children>
+                  <Button fx:id="add_btn" mnemonicParsing="false" prefHeight="27.0" prefWidth="93.0">
+                     <HBox.margin>
+                        <Insets bottom="2.0" left="10.0" right="5.0" top="2.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="power_btn" mnemonicParsing="false" prefHeight="27.0" prefWidth="93.0">
+                     <HBox.margin>
+                        <Insets bottom="2.0" left="5.0" right="10.0" top="2.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <TextField fx:id="add_tf" alignment="CENTER" prefHeight="15.0" prefWidth="93.0" promptText="contact nickname">
+                     <font>
+                        <Font size="9.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets bottom="2.0" left="10.0" right="10.0" top="2.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <VBox>
+                     <children>
+                        <HBox>
+                           <children>
+                              <Circle fx:id="on_circle" fill="#7f7f7f" radius="5.0" stroke="BLACK" strokeType="INSIDE">
+                                 <HBox.margin>
+                                    <Insets bottom="2.0" left="5.0" right="2.0" top="5.0" />
+                                 </HBox.margin>
+                              </Circle>
+                              <Label alignment="CENTER" contentDisplay="CENTER" text="online">
+                                 <font>
+                                    <Font size="9.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="2.0" right="4.0" top="4.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Circle fx:id="off_circle" fill="#7f7f7f" radius="5.0" stroke="BLACK" strokeType="INSIDE">
+                                 <HBox.margin>
+                                    <Insets bottom="2.0" left="5.0" right="2.0" top="5.0" />
+                                 </HBox.margin>
+                              </Circle>
+                              <Label alignment="CENTER" contentDisplay="CENTER" text="offline">
+                                 <font>
+                                    <Font size="9.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets left="2.0" right="2.0" top="4.0" />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <ScrollPane fx:id="contactsScrollPane" fitToWidth="true" prefViewportHeight="600.0" prefViewportWidth="460.0">
+               <content>
+                  <VBox fx:id="contactsVBoxOnScroll" />
+               </content>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </ScrollPane>
+         </children>
+      </VBox>
+      <Separator maxWidth="550.0" orientation="VERTICAL" prefHeight="5.0" />
+   </children>
+</HBox>
