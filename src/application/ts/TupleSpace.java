@@ -57,7 +57,7 @@ public class TupleSpace {
         tuple.receiver_nickname = get_contact_nickname();
         tuple.content = content;
         try {
-			this.space.write(tuple, null, 60 * 1000);
+			this.space.write(tuple, null, TupleSpaceConstants.TIMER_KEEP_TUPLE_ON_SPACE);
 		} catch (Exception e) {
 			System.out.println("Error: TupleSpace (send_message)");
 		}
@@ -69,7 +69,7 @@ public class TupleSpace {
         	Tuple template = new Tuple();
         	template.sender_nickname = get_contact_nickname();
         	template.receiver_nickname = get_nickname();
-        	Tuple tuple = (Tuple) this.space.take(template, null, 5 * 1000);
+        	Tuple tuple = (Tuple) this.space.take(template, null, TupleSpaceConstants.TIMER_TAKE_TUPLE_FROM_SPACE);
         	if(tuple!=null) {
         		pair = new Pair<Boolean, String>(true, tuple.content);
         	}
