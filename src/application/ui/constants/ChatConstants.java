@@ -9,9 +9,14 @@ import javafx.scene.text.TextAlignment;
 
 public class ChatConstants {
 	// Components Style
-	public static String STYLE_CHAT_LABEL = "-fx-font-family: 'Arial'; -fx-font-weight:bold; -fx-text-fill: #555555;";
+	public static String STYLE_CHAT_LABEL_USER = "-fx-font-family: 'Arial'; -fx-font-weight:bold; -fx-text-fill: #555555;";
+	public static String STYLE_CHAT_LABEL_CONTACT = "-fx-font-family: 'Arial'; -fx-font-weight:bold; -fx-text-fill: #555555;";
 	public static String STYLE_SCROLL_PANE_CHAT = "-fx-background-color:#dddddd; -fx-background-radius: 10 10 10 10; -fx-border-color: #999999; -fx-border-width: 2; -fx-border-radius: 5 5 5 5;";
 	public static String STYLE_VBOX_CHAT = "-fx-background-color:#dddddd;";
+	
+	// Components Alignment
+	public static Pos TEXT_ALIGNMENT_LABEL_CHAT_USER = Pos.CENTER_RIGHT;
+	public static Pos TEXT_ALIGNMENT_LABEL_CHAT_CONTACT = Pos.CENTER_LEFT;
 	
 	// Sleep
 	public static Integer THREAD_SLEEP_TIME_MILLIS = 100;

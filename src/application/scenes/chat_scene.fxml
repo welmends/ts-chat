@@ -12,7 +12,15 @@
    <children>
       <HBox prefHeight="50.0" prefWidth="480.0">
          <children>
-            <Label fx:id="chatLabel" contentDisplay="CENTER" prefHeight="40.0" prefWidth="350.0" textAlignment="CENTER">
+            <Label fx:id="chatLabelContact" contentDisplay="CENTER" prefHeight="40.0" prefWidth="350.0" textAlignment="CENTER">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="20.0" top="10.0" />
+               </HBox.margin>
+            </Label>
+            <Label fx:id="chatLabelUser" contentDisplay="CENTER" prefHeight="40.0" prefWidth="350.0" textAlignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>
@@ -22,7 +30,7 @@
             </Label>
             <ImageView fx:id="chatImageView" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                <HBox.margin>
-                  <Insets left="50.0" top="10.0" />
+                  <Insets left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
             </ImageView>
          </children>

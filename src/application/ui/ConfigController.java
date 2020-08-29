@@ -102,7 +102,7 @@ public class ConfigController extends Thread implements Initializable  {
 			for (int i=0; i<contactsButtons.size(); i++) {
 				if(contactsButtons.get(i).equals(b)) {
 					ts.set_contact_nickname(contactsButtons.get(i).getText());
-					chat.chatLabel.setText(ts.get_contact_nickname());
+					chat.chatLabelContact.setText(ts.get_contact_nickname());
 					chat.clearChat();
 					chat.loadChat();
 					chat.disableChatTextField(false);

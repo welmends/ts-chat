@@ -66,6 +66,7 @@ public class AuthController implements Initializable {
         	Integer port_number = Integer.valueOf(credentials.get(AuthConstants.HASHCODE_PORTNUMBER));
         	
         	ts.setup(ip_address, port_number, nickname);
+        	chat.chatLabelUser.setText(ts.get_nickname());
         	if(!ts.connect()) {
         		main.closeApplication();
         		Alert alert = new Alert(Alert.AlertType.ERROR);

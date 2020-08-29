@@ -18,6 +18,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -32,7 +33,8 @@ public class ChatController extends Thread implements Initializable  {
 	
 	// FXML Variables
 	@FXML VBox chatVBox;
-	@FXML Label chatLabel; //*** USE THIS TO SHOW THE CONTACT NAME
+	@FXML Label chatLabelUser;
+	@FXML Label chatLabelContact;
 	@FXML ImageView chatImageView;
 	@FXML ScrollPane chatScrollPane;
 	@FXML VBox chatVBoxOnScroll;
@@ -96,7 +98,10 @@ public class ChatController extends Thread implements Initializable  {
 	private void setupComponents() {
 		disableChatTextField(true);
 		
-		chatLabel.setStyle(ChatConstants.STYLE_CHAT_LABEL);
+		chatLabelUser.setStyle(ChatConstants.STYLE_CHAT_LABEL_USER);
+		chatLabelUser.setAlignment(ChatConstants.TEXT_ALIGNMENT_LABEL_CHAT_USER);
+		chatLabelContact.setStyle(ChatConstants.STYLE_CHAT_LABEL_CONTACT);
+		chatLabelContact.setAlignment(ChatConstants.TEXT_ALIGNMENT_LABEL_CHAT_CONTACT);
 		
 		chatImageView.setImage(ImageConstants.CHAT_TOP_ICON);
 		
