@@ -2,13 +2,10 @@ package application.ui;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import application.com.P2P;
-import application.com.P2PConstants;
-import application.com.mom.MOM;
+import application.ts.TupleSpace;
 import application.ui.constants.ConfigConstants;
 import application.ui.constants.ImageConstants;
 import javafx.beans.value.ChangeListener;
@@ -35,8 +32,7 @@ public class ConfigController extends Thread implements Initializable  {
 	@FXML VBox contactsVBoxOnScroll;
 	
 	// COM Variables
-	private MOM mom;
-	private HashMap<String, P2P> p2ps;
+	private TupleSpace ts;
 	
 	// Controllers
 	private ChatController chat;
@@ -44,9 +40,8 @@ public class ConfigController extends Thread implements Initializable  {
 	// Variables
 	private List<Button> contactsButtons;
 	
-	public void loadFromParent(MOM mom, HashMap<String, P2P> p2ps, ChatController chat) {
-		this.mom = mom;
-		this.p2ps = p2ps;
+	public void loadFromParent(TupleSpace ts, ChatController chat) {
+		this.ts = ts;
 		this.chat = chat;
 	}
 	
@@ -67,8 +62,8 @@ public class ConfigController extends Thread implements Initializable  {
 	}
 	
 	private void setupComponents() {
-		on_circle.setFill(ConfigConstants.COLOR_UNKNOWN);
-		off_circle.setFill(ConfigConstants.COLOR_OFFLINE);
+		on_circle.setFill(ConfigConstants.COLOR_ONLINE);
+		off_circle.setFill(ConfigConstants.COLOR_UNKNOWN);
 		
 		add_btn.setGraphic(ImageConstants.ADD_BTN_ICON);
 		power_btn.setGraphic(ImageConstants.POWER_BTN_ICON);
@@ -80,10 +75,6 @@ public class ConfigController extends Thread implements Initializable  {
 			if(new_contact_nickname.equals("")) {
 				return;
 			}
-			
-			p2ps.put(new_contact_nickname, new P2P());
-			p2ps.get(new_contact_nickname).setup(mount_rmi_name(mom.nickname, new_contact_nickname), mom.ip, mom.port);
-			p2ps.get(new_contact_nickname).set_technology(P2PConstants.RMI);
 			
 			HBox h = new HBox();
 			Button b = new Button();
@@ -107,21 +98,13 @@ public class ConfigController extends Thread implements Initializable  {
 	
 	private void setContactBtnPressedBehavior(Button b) {
 		b.setOnAction((event)->{
-			// Disconnect
-			if (mom.is__online() && p2ps.containsKey(mom.get_contact_nickname())) {
-				p2ps.get(mom.get_contact_nickname()).disconnect();
-        	}
     		// Select contact
 			for (int i=0; i<contactsButtons.size(); i++) {
 				if(contactsButtons.get(i).equals(b)) {
-					mom.set_contact_nickname(contactsButtons.get(i).getText());
-					chat.chatLabel.setText(mom.get_contact_nickname());
+					ts.set_contact_nickname(contactsButtons.get(i).getText());
+					chat.chatLabel.setText(ts.get_contact_nickname());
 					chat.clearChat();
 					chat.loadChat();
-					// Connect
-					if (mom.is__online() && p2ps.containsKey(mom.get_contact_nickname()) && !p2ps.get(mom.get_contact_nickname()).is_connected()) {
-						p2ps.get(mom.get_contact_nickname()).connect();
-					}
 	        		break;
 				}
 			}
@@ -130,18 +113,10 @@ public class ConfigController extends Thread implements Initializable  {
 	
 	private void setPowerBtnPressedBehavior() {
 		power_btn.setOnAction((event)->{
-        	if (mom.is__online()) {
+        	if (ts.has_connection()) {
         		getOffline();
-        		try {
-        			p2ps.get(mom.get_contact_nickname()).disconnect();	
-        		} catch (Exception e){}
         	} else {
         		getOnline();
-        		try {
-					if (p2ps.containsKey(mom.get_contact_nickname()) && !p2ps.get(mom.get_contact_nickname()).is_connected()) {
-						p2ps.get(mom.get_contact_nickname()).connect();
-					}
-        		} catch (Exception e){}
         	}
         });
     }
@@ -160,56 +135,12 @@ public class ConfigController extends Thread implements Initializable  {
 	}
 	
 	private void getOnline() {
-		mom.set_online(true);
 		on_circle.setFill(ConfigConstants.COLOR_ONLINE);
 		off_circle.setFill(ConfigConstants.COLOR_UNKNOWN);
 	}
 	
 	private void getOffline() {
-		mom.set_online(false);
 		on_circle.setFill(ConfigConstants.COLOR_UNKNOWN);
 		off_circle.setFill(ConfigConstants.COLOR_OFFLINE);
-		
-        for (String key : p2ps.keySet()) {
-            p2ps.get(key).disconnect();
-        }
-	}
-	
-	private String mount_rmi_name(String nick1, String nick2) {
-		String rmi_name;
-		Boolean order;
-		int size;
-		int value1, value2;
-		
-		if (nick1.length()<=nick2.length()) {
-			order = true;
-			size = nick1.length();
-		}else {
-			order = false;
-			size = nick2.length();
-		}
-		
-		for (int i=0; i<size; i++) {
-			value1 = (int) nick1.charAt(i);
-			value2 = (int) nick2.charAt(i);
-			if(value1==value2) {
-				continue;
-			}
-			else if (value1<value2) {
-				order = true;
-				break;
-			}
-			else {
-				order = false;
-				break;
-			}
-		}
-		
-		if (order) {
-			rmi_name = nick1+nick2;
-		} else {
-			rmi_name = nick2+nick1;
-		}
-		return rmi_name;
 	}
 }

@@ -2,12 +2,10 @@ package application.ui;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.ResourceBundle;
 
 import application.Main;
-import application.com.P2P;
-import application.com.mom.MOM;
+import application.ts.TupleSpace;
 import application.ui.constants.FXMLConstants;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -28,13 +26,12 @@ public class MainController implements Initializable {
 	@FXML AnchorPane root;
 	@FXML HBox mainHBox;
 	
-	// COM Variables
-	private MOM mom;
-	private HashMap<String, P2P> p2ps;
-	
 	// FXML Loaders
 	private FXMLLoader chatLoader;
 	private FXMLLoader configLoader;
+	
+	// COM Variables
+	private TupleSpace ts;
 	
 	// Controllers
 	private ChatController chatController;
@@ -49,8 +46,7 @@ public class MainController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// Initialize Objects
-		mom = new MOM();
-		p2ps = new HashMap<String, P2P>();
+		ts = new TupleSpace();
 		
 		Scene chatScene = null;
 		Scene configScene = null;
@@ -78,17 +74,12 @@ public class MainController implements Initializable {
 		authentication();
 		
 		// Load common objects from parent
-		chatController.loadFromParent(mom, p2ps);
-		configController.loadFromParent(mom, p2ps, chatController);
+		chatController.loadFromParent(ts);
+		configController.loadFromParent(ts, chatController);
 	}
 	
 	public void closeApplication() {
-		if (mom.is__online()) {
-	        for (String key : p2ps.keySet()) {
-	            p2ps.get(key).disconnect();
-	        }
-	        mom.set_online(false);
-		}
+		//ts.disconnect(); ****
 	}
 
     private Boolean authentication() {
@@ -96,7 +87,7 @@ public class MainController implements Initializable {
         Scene scene;
         Stage auth_stage;
         FXMLLoader loader = new FXMLLoader();
-        AuthController popupController = new AuthController(mom, chatController, configController);
+        AuthController popupController = new AuthController(ts, this, chatController, configController);
         
         loader.setLocation(getClass().getResource(FXMLConstants.FXML_AUTH_CONTROLLER));
         loader.setController(popupController);

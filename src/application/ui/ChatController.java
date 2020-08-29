@@ -4,11 +4,9 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.ResourceBundle;
 
-import application.com.P2P;
-import application.com.mom.MOM;
+import application.ts.TupleSpace;
 import application.ui.constants.ChatConstants;
 import application.ui.constants.ImageConstants;
 import application.ui.utils.SoundUtils;
@@ -28,6 +26,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Pair;
 
 public class ChatController extends Thread implements Initializable  {
 	
@@ -40,16 +39,14 @@ public class ChatController extends Thread implements Initializable  {
 	@FXML TextField chatTextField;
 	
 	// COM Variables
-	private MOM mom;
-	private HashMap<String, P2P> p2ps;
+	private TupleSpace ts;
 	
 	// Variables
 	private SoundUtils soundUtils;
 	private HashMap<String, StorageMessages> storage;
 	
-	public void loadFromParent(MOM mom, HashMap<String, P2P> p2ps) {
-		this.mom = mom;
-		this.p2ps = p2ps;
+	public void loadFromParent(TupleSpace ts) {
+		this.ts = ts;
 	}
 	
 	@Override
@@ -70,6 +67,7 @@ public class ChatController extends Thread implements Initializable  {
 	
 	@Override
 	public void run() {
+		Pair<Boolean, String> response; 
 		while(true) {
 			try {
 				Thread.sleep(ChatConstants.THREAD_SLEEP_TIME_MILLIS);
@@ -77,43 +75,17 @@ public class ChatController extends Thread implements Initializable  {
 				e.printStackTrace();
 			}
 			
-			if(mom.is__online()==false || p2ps.size()==0) {
-				continue;
-			}
-			
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					if (mom.is__online() && p2ps.containsKey(mom.get_contact_nickname()) && p2ps.get(mom.get_contact_nickname()).is_connected()) {
-						if(p2ps.get(mom.get_contact_nickname()).was_retrieved()==false) {
-							p2ps.get(mom.get_contact_nickname()).set_retrieve_status(true);
-			            	// Receive enqueued messages from MOM
-							List<String> queue = mom.receiveQueue();
-							for (int i=0; i<queue.size(); i++) {
-								updateChatOnReceive(queue.get(i));
-								
-								// Store
-				            	if (!storage.containsKey(mom.get_contact_nickname())) {
-				            		storage.put(mom.get_contact_nickname(), new StorageMessages());
-				            	}
-				            	storage.get(mom.get_contact_nickname()).push_back(queue.get(i), "in");
-							}
-							queue.clear();
-						}
-						else if(p2ps.get(mom.get_contact_nickname()).chat_stack_full()) {
-							// Receive Remotely
-							String message_received = p2ps.get(mom.get_contact_nickname()).get_chat_msg();
-							updateChatOnReceive(message_received);
-							
-							// Store
-			            	if (!storage.containsKey(mom.get_contact_nickname())) {
-			            		storage.put(mom.get_contact_nickname(), new StorageMessages());
-			            	}
-			            	storage.get(mom.get_contact_nickname()).push_back(message_received, "in");
-						}
+			response = ts.receive_message();
+			if(response.getKey()) {
+				String message_received = response.getValue();
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						updateChatOnReceive(message_received);
+						//store on storage **** (example on mom-chat project)
 					}
-				}
-			});
+				});
+			}
 		}
 	}
 	
@@ -152,17 +124,10 @@ public class ChatController extends Thread implements Initializable  {
 	            	updateChatOnSend(message_send);
 	            	
 	                // Send Remotely
-	            	if (mom.is__online() && p2ps.get(mom.get_contact_nickname()).is_connected()) {
-	            		p2ps.get(mom.get_contact_nickname()).send_chat_msg_call(message_send);
-	            	} else {
-	            		mom.send(mom.get_contact_nickname(), message_send);
-	            	}
+	            	ts.send_message(message_send);
 	            	
 	            	// Store
-	            	if (!storage.containsKey(mom.get_contact_nickname())) {
-	            		storage.put(mom.get_contact_nickname(), new StorageMessages());
-	            	}
-	            	storage.get(mom.get_contact_nickname()).push_back(message_send, "out");
+					//store on storage **** (example on mom-chat project)
 	            }
 	        }
 	        
@@ -248,15 +213,16 @@ public class ChatController extends Thread implements Initializable  {
 	}
 	
 	public void loadChat() {
-		if(storage.containsKey(mom.get_contact_nickname())) {
-			StorageMessages stor = storage.get(mom.get_contact_nickname());
-			for (int i=0; i<stor.messages.size(); i++) {
-				if(stor.directions.get(i).equals("out")) {
-					updateChatOnSend(stor.messages.get(i));
-				} else {
-					updateChatOnReceive(stor.messages.get(i));
-				}
-			}
-		}
+		//load from storage **** (example on mom-chat project)
+//		if(storage.containsKey(mom.get_contact_nickname())) {
+//			StorageMessages stor = storage.get(mom.get_contact_nickname());
+//			for (int i=0; i<stor.messages.size(); i++) {
+//				if(stor.directions.get(i).equals("out")) {
+//					updateChatOnSend(stor.messages.get(i));
+//				} else {
+//					updateChatOnReceive(stor.messages.get(i));
+//				}
+//			}
+//		}
 	}
 }
