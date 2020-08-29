@@ -24,7 +24,7 @@ public class TupleSpace {
 		this.port = -1;
 		this.nickname = "";
 		this.contact_nickname = "";
-		this.mutex = new Semaphore(0);
+		this.mutex = new Semaphore(1);
 	}
 	
 	// Setup
@@ -37,12 +37,9 @@ public class TupleSpace {
     public Boolean connect(){
     	this.lookup = new Lookup(JavaSpace.class);
 		this.space = (JavaSpace) this.lookup.getService();
-		System.out.print("Procurando pelo servico JavaSpace... ");
         if (space != null) {
-        	System.out.println("SUCESS");
         	this.is_connected = true;
         }else {
-        	System.out.println("FAIL");
         	this.is_connected = false;
         }
 		return this.is_connected;

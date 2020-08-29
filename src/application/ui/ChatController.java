@@ -90,6 +90,8 @@ public class ChatController extends Thread implements Initializable  {
 	}
 	
 	private void setupComponents() {
+		disableChatTextField(true);
+		
 		chatLabel.setStyle(ChatConstants.STYLE_CHAT_LABEL);
 		
 		chatImageView.setImage(ImageConstants.CHAT_TOP_ICON);
@@ -206,6 +208,10 @@ public class ChatController extends Thread implements Initializable  {
         
         // Adjust width of time label through padding
         time.setPadding(new Insets(0,sp.getWidth()-txt.getWidth()+6,2,0));
+	}
+	
+	public void disableChatTextField(Boolean b) {
+		chatTextField.setDisable(b);
 	}
 	
 	public void clearChat() {

@@ -105,6 +105,7 @@ public class ConfigController extends Thread implements Initializable  {
 					chat.chatLabel.setText(ts.get_contact_nickname());
 					chat.clearChat();
 					chat.loadChat();
+					chat.disableChatTextField(false);
 	        		break;
 				}
 			}
