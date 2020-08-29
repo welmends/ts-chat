@@ -75,6 +75,10 @@ public class ChatController extends Thread implements Initializable  {
 				e.printStackTrace();
 			}
 			
+			if(!ts.has_connection()) {
+				continue;
+			}
+			
 			response = ts.receive_message();
 			if(response.getKey()) {
 				String message_received = response.getValue();
@@ -126,7 +130,11 @@ public class ChatController extends Thread implements Initializable  {
 	            	updateChatOnSend(message_send);
 	            	
 	                // Send Remotely
-	            	ts.send_message(message_send);
+	            	if(ts.has_connection()) {
+	            		ts.send_message(message_send);
+	            	}else {
+	            		//Store data to send!
+	            	}
 	            	
 	            	// Store
 					//store on storage **** (example on mom-chat project)

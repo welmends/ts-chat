@@ -122,6 +122,18 @@ public class ConfigController extends Thread implements Initializable  {
         });
     }
 	
+	private void getOnline() {
+		ts.connect();
+		on_circle.setFill(ConfigConstants.COLOR_ONLINE);
+		off_circle.setFill(ConfigConstants.COLOR_UNKNOWN);
+	}
+	
+	private void getOffline() {
+		ts.disconnect();
+		on_circle.setFill(ConfigConstants.COLOR_UNKNOWN);
+		off_circle.setFill(ConfigConstants.COLOR_OFFLINE);
+	}
+	
 	private void setVBoxScrollsBehavior() {
 		contactsVBoxOnScroll.heightProperty().addListener(new ChangeListener<Number>() {
 
@@ -133,15 +145,5 @@ public class ConfigController extends Thread implements Initializable  {
 	        }
 	        
 		});
-	}
-	
-	private void getOnline() {
-		on_circle.setFill(ConfigConstants.COLOR_ONLINE);
-		off_circle.setFill(ConfigConstants.COLOR_UNKNOWN);
-	}
-	
-	private void getOffline() {
-		on_circle.setFill(ConfigConstants.COLOR_UNKNOWN);
-		off_circle.setFill(ConfigConstants.COLOR_OFFLINE);
 	}
 }
