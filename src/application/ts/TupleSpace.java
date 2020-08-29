@@ -24,7 +24,7 @@ public class TupleSpace {
 		this.port = -1;
 		this.nickname = "";
 		this.contact_nickname = "";
-		this.mutex = new Semaphore(0); // Use mutex to generate an atomic nickname getter
+		this.mutex = new Semaphore(0);
 	}
 	
 	// Setup
@@ -56,8 +56,8 @@ public class TupleSpace {
     // Message Control
     public void send_message(String content) {
         Tuple tuple = new Tuple();
-        tuple.sender_nickname = nickname;
-        tuple.receiver_nickname = contact_nickname;
+        tuple.sender_nickname = get_nickname();
+        tuple.receiver_nickname = get_contact_nickname();
         tuple.content = content;
         try {
 			this.space.write(tuple, null, 60 * 1000);
@@ -70,8 +70,8 @@ public class TupleSpace {
     	Pair<Boolean, String> pair = new Pair<Boolean, String>(false, "<error>");
         try {
         	Tuple template = new Tuple();
-        	template.sender_nickname = contact_nickname;
-        	template.receiver_nickname = nickname;
+        	template.sender_nickname = get_contact_nickname();
+        	template.receiver_nickname = get_nickname();
         	Tuple tuple = (Tuple) this.space.take(template, null, 5 * 1000);
         	if(tuple!=null) {
         		pair = new Pair<Boolean, String>(true, tuple.content);
@@ -100,12 +100,17 @@ public class TupleSpace {
     }
     
     public String get_contact_nickname() {
-    	return this.contact_nickname;
+    	try { mutex.acquire(); } catch (Exception e) {}
+    	String nick = this.contact_nickname;
+    	try { mutex.release(); } catch (Exception e) {}
+    	return nick;
     }
     
     // Setters
     public void set_contact_nickname(String contact_nickname) {
+    	try { mutex.acquire(); } catch (Exception e) {}
     	this.contact_nickname = contact_nickname;
+    	try { mutex.release(); } catch (Exception e) {}
     }
     
 }
