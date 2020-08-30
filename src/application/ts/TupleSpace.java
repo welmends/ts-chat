@@ -224,7 +224,7 @@ public class TupleSpace extends Thread {
         return true;
     }
     
-    public void update_room(String room_name) {
+    public void select_room(String room_name) {
     	try {
         	TupleRoom template_room = new TupleRoom();
         	TupleRoom tuple_room = new TupleRoom();

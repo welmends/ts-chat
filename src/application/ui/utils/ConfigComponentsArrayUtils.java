@@ -5,11 +5,12 @@ import java.util.List;
 
 import application.ui.ConfigController;
 import application.ui.constants.ConfigConstants;
+import javafx.beans.binding.Bindings;
 import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
 
-public class ComponentsArrayUtils {
+public class ConfigComponentsArrayUtils {
 	
 	private ConfigController config;
 	private VBox vboxOnScroll;
@@ -18,7 +19,7 @@ public class ComponentsArrayUtils {
 	private List<Button> contacts_components;
 	
 	
-	public ComponentsArrayUtils(ConfigController config, VBox vboxOnScroll, HashMap<String, String> hash, List<TitledPane> rooms_components, List<Button> contacts_components){
+	public ConfigComponentsArrayUtils(ConfigController config, VBox vboxOnScroll, HashMap<String, String> hash, List<TitledPane> rooms_components, List<Button> contacts_components){
 		this.config = config;
 		this.vboxOnScroll = vboxOnScroll;
 		this.hash = hash;
@@ -35,6 +36,10 @@ public class ComponentsArrayUtils {
 		tp.setText(room_name);
 		tp.setGraphic(b);
 		tp.setContent(new VBox());
+		
+		b.translateXProperty().bind(Bindings.createDoubleBinding(() -> 
+			tp.getWidth() - b.getLayoutX() - b.getWidth() - ConfigConstants.ROOM_BUTTON_GRAPHIC_MARGIN_RIGHT, tp.widthProperty())
+		);
 		
 		config.setRoomBtnPressedBehavior(b, tp);
 		

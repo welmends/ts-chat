@@ -9,9 +9,8 @@ import java.util.ResourceBundle;
 import application.ts.TupleSpace;
 import application.ui.constants.ConfigConstants;
 import application.ui.constants.ImageConstants;
-import application.ui.utils.ComponentsArrayUtils;
+import application.ui.utils.ConfigComponentsArrayUtils;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -46,7 +45,7 @@ public class ConfigController extends Thread implements Initializable  {
 	private HashMap<String, String> hash;
 	private List<TitledPane> rooms_components;
 	private List<Button> contacts_components;
-	private ComponentsArrayUtils componentsArray_utils;
+	private ConfigComponentsArrayUtils componentsArray_utils;
 	
 	public void loadFromParent(TupleSpace ts, ChatController chat) {
 		this.ts = ts;
@@ -59,7 +58,7 @@ public class ConfigController extends Thread implements Initializable  {
 		hash = new HashMap<String, String>();
 		rooms_components = new ArrayList<TitledPane>();
 		contacts_components = new ArrayList<Button>();
-		componentsArray_utils = new ComponentsArrayUtils(this, vboxOnScroll, hash, rooms_components, contacts_components);
+		componentsArray_utils = new ConfigComponentsArrayUtils(this, vboxOnScroll, hash, rooms_components, contacts_components);
 		
 		setupComponents();
 		setAddBtnPressedBehavior();
@@ -143,12 +142,8 @@ public class ConfigController extends Thread implements Initializable  {
 	
 	public void setRoomBtnPressedBehavior(Button b_room, TitledPane tp_room) {
 		b_room.setOnAction((event)->{
-			ts.update_room(tp_room.getText());
+			ts.select_room(tp_room.getText());
         });
-		
-		b_room.translateXProperty().bind(Bindings.createDoubleBinding(() -> 
-			tp_room.getWidth() - b_room.getLayoutX() - b_room.getWidth() - ConfigConstants.ROOM_BUTTON_GRAPHIC_MARGIN_RIGHT, 
-			tp_room.widthProperty()));
     }
 	
 	public void setContactBtnPressedBehavior(Button b_contact) {
