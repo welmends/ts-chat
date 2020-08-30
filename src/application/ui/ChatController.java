@@ -97,7 +97,12 @@ public class ChatController extends Thread implements Initializable  {
 							// CONTACT_CHAT
 							updateChatOnReceive(message_received);
 						}
-						//store on storage **** (example on mom-chat project)
+		            	// Store Messages
+		            	String storkey = StorageMessages.generate_storkey(ts.get_chat_type(), ts.get_room_name(), ts.get_contact_name());
+		            	if (!storage.containsKey(storkey)) {
+		            		storage.put(storkey, new StorageMessages());
+		            	}
+		            	storage.get(storkey).push_back(message_received, ts.get_user_name(), StorageMessages.RECEIVE_PREFIX);
 					}
 				});
 			}
@@ -147,11 +152,15 @@ public class ChatController extends Thread implements Initializable  {
 	            	if(ts.has_connection()) {
 	            		ts.send_message(message_send);
 	            	}else {
-	            		//Store data to send!
+	            		//Store data to send! ***********
 	            	}
 	            	
-	            	// Store
-					//store on storage **** (example on mom-chat project)
+	            	// Store Messages
+	            	String storkey = StorageMessages.generate_storkey(ts.get_chat_type(), ts.get_room_name(), ts.get_contact_name());
+	            	if (!storage.containsKey(storkey)) {
+	            		storage.put(storkey, new StorageMessages());
+	            	}
+	            	storage.get(storkey).push_back(message_send, ts.get_user_name(), StorageMessages.SEND_PREFIX);
 	            }
 	        }
 	        
@@ -291,16 +300,22 @@ public class ChatController extends Thread implements Initializable  {
 	}
 	
 	public void loadChat() {
-		//load from storage **** (example on mom-chat project)
-//		if(storage.containsKey(mom.get_contact_nickname())) {
-//			StorageMessages stor = storage.get(mom.get_contact_nickname());
-//			for (int i=0; i<stor.messages.size(); i++) {
-//				if(stor.directions.get(i).equals("out")) {
-//					updateChatOnSend(stor.messages.get(i));
-//				} else {
-//					updateChatOnReceive(stor.messages.get(i));
-//				}
-//			}
-//		}
+		Boolean type = ts.get_chat_type();
+		String storkey = StorageMessages.generate_storkey(type, ts.get_room_name(), ts.get_contact_name());
+			
+		if(storage.containsKey(storkey)) {
+			StorageMessages stor = storage.get(storkey);
+			for (int i=0; i<stor.messages.size(); i++) {
+				if(stor.directions.get(i).equals(StorageMessages.SEND_PREFIX)) {
+					updateChatOnSend(stor.messages.get(i));
+				} else {
+					if(type.equals(TupleSpaceConstants.ROOM_CHAT)) {
+						updateChatOnReceive(stor.messages.get(i), stor.sender_names.get(i));
+					}else {
+						updateChatOnReceive(stor.messages.get(i));
+					}
+				}
+			}
+		}
 	}
 }
