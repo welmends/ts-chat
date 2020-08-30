@@ -140,6 +140,17 @@ public class ConfigController extends Thread implements Initializable  {
 			}
 		});
 		
+		hash.forEach((key, value) -> {
+			if(ts_hash.containsKey(key)) {
+				if(!ts_hash.get(key).equals(value)) {
+					componentsArray_utils.del_contact_button(value, key);
+					componentsArray_utils.add_contact_button(ts.get_user_name(), ts_hash.get(key), key);
+				}
+			}else {
+				componentsArray_utils.del_contact_button(value, key);
+			}
+		});
+		
         vboxOnScroll.applyCss();
         vboxOnScroll.layout();
 	}
@@ -160,8 +171,9 @@ public class ConfigController extends Thread implements Initializable  {
 			if(ts.get_room_name().equals(tp_room.getText())) {
 				ts.deselect_room();
 				ts.set_chat_type(null);
+				ts.set_room_name("");
+				ts.set_contact_name("");
 				
-				componentsArray_utils.del_contact_button(tp_room.getText(), ts.get_user_name());
 				chat.userImageView.setImage(null);
 				chat.chatLabelContact.setText(null);
 				chat.clearChat();
@@ -198,8 +210,6 @@ public class ConfigController extends Thread implements Initializable  {
 			if(!ts.add_room(room_name)) {
 				return;
 			}
-			
-			componentsArray_utils.add_room_titledPane(room_name);
         });
     }
 	
