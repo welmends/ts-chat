@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import application.ts.TupleSpace;
 import application.ui.constants.ConfigConstants;
 import application.ui.constants.ImageConstants;
+import application.ui.utils.ComponentsArrayUtils;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
@@ -33,7 +34,7 @@ public class ConfigController extends Thread implements Initializable  {
 	@FXML Circle off_circle;
 	@FXML TextField add_tf;
 	@FXML ScrollPane contactsScrollPane;
-	@FXML VBox contactsVBoxOnScroll;
+	@FXML VBox vboxOnScroll;
 	
 	// COM Variables
 	private TupleSpace ts;
@@ -45,6 +46,7 @@ public class ConfigController extends Thread implements Initializable  {
 	private HashMap<String, String> hash;
 	private List<TitledPane> rooms_components;
 	private List<Button> contacts_components;
+	private ComponentsArrayUtils componentsArray_utils;
 	
 	public void loadFromParent(TupleSpace ts, ChatController chat) {
 		this.ts = ts;
@@ -57,6 +59,7 @@ public class ConfigController extends Thread implements Initializable  {
 		hash = new HashMap<String, String>();
 		rooms_components = new ArrayList<TitledPane>();
 		contacts_components = new ArrayList<Button>();
+		componentsArray_utils = new ComponentsArrayUtils(this, vboxOnScroll, hash, rooms_components, contacts_components);
 		
 		setupComponents();
 		setAddBtnPressedBehavior();
@@ -106,7 +109,7 @@ public class ConfigController extends Thread implements Initializable  {
 				}
 			}
 			if(add_del) {
-				add_room_titledPane(ts_rooms.get(i));
+				componentsArray_utils.add_room_titledPane(ts_rooms.get(i));
 			}
 		}
 		
@@ -119,110 +122,26 @@ public class ConfigController extends Thread implements Initializable  {
 				}
 			}
 			if(add_del) {
-				del_room_titledpane(rooms_components.get(i).getText());
+				componentsArray_utils.del_room_titledpane(rooms_components.get(i).getText());
 			}
 		}
 		
 		ts_hash.forEach((key, value) -> {
 			if(hash.containsKey(key)) {
 				if(!hash.get(key).equals(value)) {
-					del_contact_button(hash.get(key), key);
-					add_contact_button(value, key);
+					componentsArray_utils.del_contact_button(hash.get(key), key);
+					componentsArray_utils.add_contact_button(ts.get_user_name(), value, key);
 				}
 			}else {
-				add_contact_button(value, key);
+				componentsArray_utils.add_contact_button(ts.get_user_name(), value, key);
 			}
 		});
 		
-        contactsVBoxOnScroll.applyCss();
-        contactsVBoxOnScroll.layout();
+        vboxOnScroll.applyCss();
+        vboxOnScroll.layout();
 	}
 	
-	// Components Add and Del
-	private void add_room_titledPane(String room_name) {
-		Button b = new Button(ConfigConstants.ROOM_BUTTON_TEXT);
-		b.setStyle(ConfigConstants.ROOM_BUTTON_STYLE);
-		b.setContentDisplay(ConfigConstants.ROOM_BUTTON_CONTENT_DISPLAY);
-		
-		TitledPane tp = new TitledPane();
-		tp.setText(room_name);
-		tp.setGraphic(b);
-		tp.setContent(new VBox());
-		
-		setRoomBtnPressedBehavior(b, tp);
-		
-		rooms_components.add(tp);
-		
-        contactsVBoxOnScroll.getChildren().add(tp);
-	}
-	
-	private void add_contact_button(String room_name, String contact_name) {
-		Button b = new Button();
-		b.setText(contact_name);
-		b.setPrefWidth(ConfigConstants.CONTACT_BUTTON_PREF_WIDTH);
-		setContactBtnPressedBehavior(b);
-		if(contact_name.equals(ts.get_user_name())) {
-			b.setDisable(true);
-		}
-		
-		contacts_components.add(b);
-		
-		for (int i=0; i<rooms_components.size(); i++) {
-			if(rooms_components.get(i).getText().equals(room_name)) {
-				VBox content = (VBox) rooms_components.get(i).getContent();
-				content.getChildren().add(b);
-			}
-		}
-		
-		hash.put(contact_name, room_name);
-	}
-	
-	private void del_room_titledpane(String room_name) {
-		for (int i=0; i<rooms_components.size(); i++) {
-			if(rooms_components.get(i).getText().equals(room_name)) {
-				contactsVBoxOnScroll.getChildren().remove(rooms_components.get(i));
-				rooms_components.remove(i);
-				break;
-			}
-		}
-	}
-	
-	private void del_contact_button(String room_name, String contact_name) {
-		for (int i=0; i<rooms_components.size(); i++) {
-			if(rooms_components.get(i).getText().equals(room_name)) {
-				for (int j=0; j<contacts_components.size(); j++) {
-					if(contacts_components.get(j).getText().equals(contact_name)) {
-						VBox content = (VBox) rooms_components.get(i).getContent();
-						content.getChildren().remove(contacts_components.get(j));
-						contacts_components.remove(j);
-		        		break;
-					}
-				}
-				break;
-			}
-		}
-
-		
-		hash.remove(contact_name, room_name);
-	}
-	
-	// Behaviors
-	private void setAddBtnPressedBehavior() {
-		add_btn.setOnAction((event)->{
-			String room_name = add_tf.getText();
-			add_tf.setText("");
-			if(room_name.equals("")) {
-				return;
-			}
-			if(!ts.add_room(room_name)) {
-				return;
-			}
-			
-			add_room_titledPane(room_name);
-        });
-    }
-	
-	private void setRoomBtnPressedBehavior(Button b_room, TitledPane tp_room) {
+	public void setRoomBtnPressedBehavior(Button b_room, TitledPane tp_room) {
 		b_room.setOnAction((event)->{
 			ts.update_room(tp_room.getText());
         });
@@ -232,7 +151,7 @@ public class ConfigController extends Thread implements Initializable  {
 			tp_room.widthProperty()));
     }
 	
-	private void setContactBtnPressedBehavior(Button b_contact) {
+	public void setContactBtnPressedBehavior(Button b_contact) {
 		b_contact.setOnAction((event)->{
 			for (int i=0; i<contacts_components.size(); i++) {
 				if(contacts_components.get(i).equals(b_contact)) {
@@ -247,6 +166,21 @@ public class ConfigController extends Thread implements Initializable  {
         });
 	}
 	
+	private void setAddBtnPressedBehavior() {
+		add_btn.setOnAction((event)->{
+			String room_name = add_tf.getText();
+			add_tf.setText("");
+			if(room_name.equals("")) {
+				return;
+			}
+			if(!ts.add_room(room_name)) {
+				return;
+			}
+			
+			componentsArray_utils.add_room_titledPane(room_name);
+        });
+    }
+
 	private void setPowerBtnPressedBehavior() {
 		power_btn.setOnAction((event)->{
         	if (ts.has_connection()) {
@@ -262,7 +196,7 @@ public class ConfigController extends Thread implements Initializable  {
     }
 	
 	private void setVBoxScrollsBehavior() {
-		contactsVBoxOnScroll.heightProperty().addListener(new ChangeListener<Number>() {
+		vboxOnScroll.heightProperty().addListener(new ChangeListener<Number>() {
 
 	        @Override
 	        public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {

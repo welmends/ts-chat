@@ -66,10 +66,10 @@ public class TupleSpace extends Thread {
 	}
 	
 	// Setup
-	public void setup(String ip, Integer port, String my_name) {
+	public void setup(String ip, Integer port, String user_name) {
 		this.ip = ip;
 		this.port = port;
-		this.user_name = my_name;//VERIFY IF ALREADY EXISTS AND INSERT IN tuple_admin
+		this.user_name = user_name;
 	}
 	
     public Boolean connect(){
