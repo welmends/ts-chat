@@ -100,7 +100,8 @@ public class ConfigComponentsArrayUtils {
 		
 		TitledPane tp = new TitledPane();
 		tp.setText(room_name);
-		tp.setStyle(ConfigConstants.TITLED_PANE_TEXT_STYLE);
+		tp.setStyle(ConfigConstants.TITLED_PANE_STYLE);
+		tp.setContentDisplay(ConfigConstants.ROOM_BUTTON_CONTENT_DISPLAY);
 		tp.setGraphic(h);
 		tp.setContent(new VBox());
 		
