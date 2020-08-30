@@ -83,6 +83,7 @@ public class AuthController implements Initializable {
             		alert.setResizable(false);
             		alert.setHeaderText("The username is invalid. Try another one.");
             		alert.showAndWait();
+            		disableComponents(false);
             		return;
         		}else {
         			chat.chatLabelUser.setText(ts.get_user_name());
