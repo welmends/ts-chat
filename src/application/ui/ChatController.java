@@ -35,6 +35,7 @@ public class ChatController extends Thread implements Initializable  {
 	@FXML VBox chatVBox;
 	@FXML Label chatLabelUser;
 	@FXML Label chatLabelContact;
+	@FXML ImageView userImageView;
 	@FXML ImageView chatImageView;
 	@FXML ScrollPane chatScrollPane;
 	@FXML VBox chatVBoxOnScroll;

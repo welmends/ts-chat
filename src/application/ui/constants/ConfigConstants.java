@@ -16,12 +16,8 @@ public class ConfigConstants {
 	public static String TITLED_PANE_STYLE = "-fx-font-family: 'Arial'; -fx-font-size: 10pt; -fx-font-weight:bold; -fx-text-fill: #555555;";
 	public static String BUTTON_STYLE = "-fx-font-family: 'Arial'; -fx-font-size: 8pt; -fx-font-weight:bold; -fx-text-fill: #555555;";
 	
-	// Text and Prefix
-	public static String ROOM_BUTTON_TEXT = "Enter";
-	public static String CHAT_LABEL_ROOM_PREFIX = "Room: ";
-	public static String CHAT_LABEL_CONTACT_PREFIX = "Contact: ";
-	
 	// Specific Constants
+	public static String ROOM_BUTTON_TEXT = "Enter";
 	public static Double CONTACT_BUTTON_PREF_WIDTH = 195.0;
 	public static Double ROOM_BUTTON_GRAPHIC_MARGIN_RIGHT = 10.0;
 	public static ContentDisplay ROOM_BUTTON_CONTENT_DISPLAY = ContentDisplay.RIGHT;
