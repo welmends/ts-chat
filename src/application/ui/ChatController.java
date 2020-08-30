@@ -118,7 +118,7 @@ public class ChatController extends Thread implements Initializable  {
 		chatLabelContact.setStyle(ChatConstants.STYLE_CHAT_LABEL_CONTACT);
 		chatLabelContact.setAlignment(ChatConstants.TEXT_ALIGNMENT_LABEL_CHAT_CONTACT);
 		
-		chatImageView.setImage(ImageConstants.CHAT_TOP_ICON);
+		chatImageView.setImage(ImageConstants.MONO_USER_ICON);
 		
 		chatScrollPane.setStyle(ChatConstants.STYLE_SCROLL_PANE_CHAT);
 		chatVBoxOnScroll.setStyle(ChatConstants.STYLE_VBOX_CHAT);

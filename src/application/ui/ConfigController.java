@@ -17,21 +17,21 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Circle;
 
 public class ConfigController extends Thread implements Initializable  {
 	
 	// FXML Variables
 	@FXML HBox mainHBox;
+	@FXML ImageView chatImageView;
+	@FXML Label chatLabel;
 	@FXML Button add_btn;
-	@FXML Button power_btn;
-	@FXML Circle on_circle;
-	@FXML Circle off_circle;
 	@FXML TextField add_tf;
 	@FXML ScrollPane contactsScrollPane;
 	@FXML VBox vboxOnScroll;
@@ -63,7 +63,6 @@ public class ConfigController extends Thread implements Initializable  {
 		
 		setupComponents();
 		setAddBtnPressedBehavior();
-		setPowerBtnPressedBehavior();
 		setVBoxScrollsBehavior();
 	}
 	
@@ -90,11 +89,12 @@ public class ConfigController extends Thread implements Initializable  {
 	}
 	
 	private void setupComponents() {
-		on_circle.setFill(ConfigConstants.COLOR_ONLINE);
-		off_circle.setFill(ConfigConstants.COLOR_UNKNOWN);
+		chatLabel.setText(ConfigConstants.CHAT_LABEL_TEXT);
+		chatLabel.setStyle(ConfigConstants.CHAT_LABEL_STYLE);
+		
+		chatImageView.setImage(ImageConstants.CHAT_TOP_ICON);
 		
 		add_btn.setGraphic(ImageConstants.ADD_BTN_ICON);
-		power_btn.setGraphic(ImageConstants.POWER_BTN_ICON);
 	}
 	
 	private void updateSpaceList(List<String> ts_rooms, HashMap<String, String> ts_hash) {
@@ -184,20 +184,6 @@ public class ConfigController extends Thread implements Initializable  {
 			}
 			
 			componentsArray_utils.add_room_titledPane(room_name);
-        });
-    }
-
-	private void setPowerBtnPressedBehavior() {
-		power_btn.setOnAction((event)->{
-        	if (ts.has_connection()) {
-        		ts.disconnect();
-        		on_circle.setFill(ConfigConstants.COLOR_UNKNOWN);
-        		off_circle.setFill(ConfigConstants.COLOR_OFFLINE);
-        	} else {
-        		ts.connect();
-        		on_circle.setFill(ConfigConstants.COLOR_ONLINE);
-        		off_circle.setFill(ConfigConstants.COLOR_UNKNOWN);
-        	}
         });
     }
 	
