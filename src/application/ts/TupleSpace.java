@@ -300,18 +300,20 @@ public class TupleSpace extends Thread {
         		TupleMessage tuple_message = (TupleMessage) this.space.take(template_message, null, TupleSpaceConstants.TIMER_TAKE_MESSAGE);
             	if(tuple_message!=null) {
             		if(tuple_message.sender_name.equals(get_user_name())) {
+            			this.space.write(tuple_message, null, TupleSpaceConstants.TIMER_KEEP_MESSAGE);
             			return null;
             		}
-            		if(tuple_message.receivers.contains(get_user_name())) {
+            		else if(tuple_message.receivers.contains(get_user_name())) {
+            			this.space.write(tuple_message, null, TupleSpaceConstants.TIMER_KEEP_MESSAGE);
             			return null;
             		}else {
             			tuple_message.receivers.add(get_user_name());
+                		List<String> contacts = get_contacts_list(get_room_name());
+                		if(tuple_message.receivers.size()<contacts.size()-1) {
+                			this.space.write(tuple_message, null, TupleSpaceConstants.TIMER_KEEP_MESSAGE);
+                		}
+                		return tuple_message;
             		}
-            		List<String> contacts = get_contacts_list(get_room_name());
-            		if(tuple_message.receivers.size()<contacts.size()-1) {
-            			this.space.write(tuple_message, null, TupleSpaceConstants.TIMER_KEEP_MESSAGE);
-            		}
-            		return tuple_message;
             	}else {
             		return null;
             	}
