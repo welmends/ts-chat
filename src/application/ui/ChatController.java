@@ -87,22 +87,23 @@ public class ChatController extends Thread implements Initializable  {
 				Boolean chat_type = tuple_message.chat_type;
 				String message_received = tuple_message.content;
 				String sender_name = tuple_message.sender_name;
+				String text_time = new SimpleDateFormat(ChatConstants.TIME_FORMAT).format(new Date());
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
 						if(chat_type.equals(TupleSpaceConstants.ROOM_CHAT)) {
 							// ROOM_CHAT
-							updateChatOnReceive(message_received, sender_name);
+							updateChatOnReceive(message_received, text_time, sender_name);
 						}else {
 							// CONTACT_CHAT
-							updateChatOnReceive(message_received);
+							updateChatOnReceive(message_received, text_time);
 						}
 		            	// Store Messages
 		            	String storkey = StorageMessages.generate_storkey(ts.get_chat_type(), ts.get_room_name(), ts.get_contact_name());
 		            	if (!storage.containsKey(storkey)) {
 		            		storage.put(storkey, new StorageMessages());
 		            	}
-		            	storage.get(storkey).push_back(message_received, ts.get_user_name(), StorageMessages.RECEIVE_PREFIX);
+		            	storage.get(storkey).push_back(message_received, text_time, ts.get_user_name(), StorageMessages.RECEIVE_PREFIX);
 					}
 				});
 			}
@@ -144,15 +145,14 @@ public class ChatController extends Thread implements Initializable  {
 	            if (key.getCode().equals(KeyCode.ENTER) && chatTextField.getText().length()>0){
 	            	// Get text
 	            	String message_send = chatTextField.getText();
+	            	String text_time = new SimpleDateFormat(ChatConstants.TIME_FORMAT).format(new Date());
 	            	
 	            	// Send Locally
-	            	updateChatOnSend(message_send);
+	            	updateChatOnSend(message_send, text_time);
 	            	
 	                // Send Remotely
 	            	if(ts.has_connection()) {
 	            		ts.send_message(message_send);
-	            	}else {
-	            		//Store data to send! ***********
 	            	}
 	            	
 	            	// Store Messages
@@ -160,14 +160,14 @@ public class ChatController extends Thread implements Initializable  {
 	            	if (!storage.containsKey(storkey)) {
 	            		storage.put(storkey, new StorageMessages());
 	            	}
-	            	storage.get(storkey).push_back(message_send, ts.get_user_name(), StorageMessages.SEND_PREFIX);
+	            	storage.get(storkey).push_back(message_send, text_time, ts.get_user_name(), StorageMessages.SEND_PREFIX);
 	            }
 	        }
 	        
 	    });
 	}
 	
-	private void updateChatOnSend(String text_message) {
+	private void updateChatOnSend(String text_message, String text_time) {
     	// Update chat components
         Label txt = new Label("");
         txt.setText(text_message+ChatConstants.SPACE_FOR_LABEL_TIME);
@@ -177,7 +177,7 @@ public class ChatController extends Thread implements Initializable  {
         txt.setPadding(ChatConstants.PADDING_LABEL_TEXT_SEND);
         txt.setAlignment(ChatConstants.ALIGNMENT_LABEL_TEXT_SEND);
         
-        Label time = new Label(new SimpleDateFormat(ChatConstants.LABEL_TIME_SIMPLE_DATE_FORMAT).format(new Date()));
+        Label time = new Label(text_time);
         time.setFont(ChatConstants.FONT_LABEL_TIME);
         time.setPadding(ChatConstants.PADDING_LABEL_TIME);
         time.setTextAlignment(ChatConstants.TEXT_ALIGNMENT_LABEL_TIME);
@@ -204,7 +204,7 @@ public class ChatController extends Thread implements Initializable  {
         chatTextField.setText("");
 	}
 	
-	private void updateChatOnReceive(String text_message) {
+	private void updateChatOnReceive(String text_message, String text_time) {
     	// Update chat components
 		Label txt = new Label("");
         txt.setText(text_message+ChatConstants.SPACE_FOR_LABEL_TIME);
@@ -214,7 +214,7 @@ public class ChatController extends Thread implements Initializable  {
         txt.setPadding(ChatConstants.PADDING_LABEL_TEXT_RECEIVE_CONTACT);
         txt.setAlignment(ChatConstants.ALIGNMENT_LABEL_TEXT_RECEIVE);
     	
-        Label time = new Label(new SimpleDateFormat(ChatConstants.LABEL_TIME_SIMPLE_DATE_FORMAT).format(new Date()));
+        Label time = new Label(text_time);
         time.setFont(ChatConstants.FONT_LABEL_TIME);
         time.setPadding(ChatConstants.PADDING_LABEL_TIME);
         time.setTextAlignment(ChatConstants.TEXT_ALIGNMENT_LABEL_TIME);
@@ -241,7 +241,7 @@ public class ChatController extends Thread implements Initializable  {
         time.setPadding(new Insets(0,sp.getWidth()-txt.getWidth()+6,2,0));
 	}
 	
-	private void updateChatOnReceive(String text_message, String sender_name) {
+	private void updateChatOnReceive(String text_message, String text_time, String sender_name) {
     	// Update chat components
 		Label txt = new Label("");
 		int needed_length = sender_name.length()+2;
@@ -256,7 +256,7 @@ public class ChatController extends Thread implements Initializable  {
         txt.setPadding(ChatConstants.PADDING_LABEL_TEXT_RECEIVE_ROOM);
         txt.setAlignment(ChatConstants.ALIGNMENT_LABEL_TEXT_RECEIVE);
     	
-        Label time = new Label(new SimpleDateFormat(ChatConstants.LABEL_TIME_SIMPLE_DATE_FORMAT).format(new Date()));
+        Label time = new Label(text_time);
         time.setFont(ChatConstants.FONT_LABEL_TIME);
         time.setPadding(ChatConstants.PADDING_LABEL_TIME);
         time.setTextAlignment(ChatConstants.TEXT_ALIGNMENT_LABEL_TIME);
@@ -307,12 +307,12 @@ public class ChatController extends Thread implements Initializable  {
 			StorageMessages stor = storage.get(storkey);
 			for (int i=0; i<stor.messages.size(); i++) {
 				if(stor.directions.get(i).equals(StorageMessages.SEND_PREFIX)) {
-					updateChatOnSend(stor.messages.get(i));
+					updateChatOnSend(stor.messages.get(i), stor.text_times.get(i));
 				} else {
 					if(type.equals(TupleSpaceConstants.ROOM_CHAT)) {
-						updateChatOnReceive(stor.messages.get(i), stor.sender_names.get(i));
+						updateChatOnReceive(stor.messages.get(i), stor.text_times.get(i), stor.sender_names.get(i));
 					}else {
-						updateChatOnReceive(stor.messages.get(i));
+						updateChatOnReceive(stor.messages.get(i), stor.text_times.get(i));
 					}
 				}
 			}

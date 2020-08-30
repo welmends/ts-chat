@@ -13,18 +13,22 @@ public class StorageMessages {
 	public static String RECEIVE_PREFIX = "in";
 	
 	public List<String> messages;
+	public List<String> text_times;
 	public List<String> sender_names;
 	public List<String> directions;
 	
 	
 	public StorageMessages() {
 		messages = new ArrayList<String>();
+		text_times = new ArrayList<String>();
 		sender_names = new ArrayList<String>();
 		directions = new ArrayList<String>();
+		
 	}
 	
-	public void push_back(String msg, String sender, String dir) {
+	public void push_back(String msg, String text_t, String sender, String dir) {
 		messages.add(msg);
+		text_times.add(text_t);
 		sender_names.add(sender);
 		directions.add(dir);
 	}

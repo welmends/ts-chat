@@ -24,7 +24,7 @@ public class ChatConstants {
 	
 	// Time Label
 	public static String SPACE_FOR_LABEL_TIME = "          ";
-	public static String LABEL_TIME_SIMPLE_DATE_FORMAT = "hh:mm a";
+	public static String TIME_FORMAT = "hh:mm a";
 	public static Font FONT_LABEL_TIME = Font.font("System", FontPosture.ITALIC, 9);
 	public static Insets PADDING_LABEL_TIME = new Insets(0,6,2,0);
 	public static TextAlignment TEXT_ALIGNMENT_LABEL_TIME = TextAlignment.RIGHT;
