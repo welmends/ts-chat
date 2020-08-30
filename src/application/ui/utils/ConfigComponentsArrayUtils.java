@@ -1,5 +1,6 @@
 package application.ui.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,15 +21,71 @@ public class ConfigComponentsArrayUtils {
 	private List<Button> contacts_components;
 	
 	
-	public ConfigComponentsArrayUtils(ConfigController config, VBox vboxOnScroll, HashMap<String, String> hash, List<TitledPane> rooms_components, List<Button> contacts_components){
+	public ConfigComponentsArrayUtils(ConfigController config, VBox vboxOnScroll){
 		this.config = config;
 		this.vboxOnScroll = vboxOnScroll;
-		this.hash = hash;
-		this.rooms_components = rooms_components;
-		this.contacts_components = contacts_components;
+		this.hash = new HashMap<String, String>();
+		this.rooms_components = new ArrayList<TitledPane>();
+		this.contacts_components = new ArrayList<Button>();
 	}
 	
-	public void add_room_titledPane(String room_name) {
+	@SuppressWarnings("unchecked")
+	public void updateComponentsList(String user_name, List<String> ts_rooms, HashMap<String, String> ts_hash) {
+		Boolean add_del;
+		
+		for (int i=0; i<ts_rooms.size(); i++) {
+			add_del = true;
+			for (int j=0; j<rooms_components.size(); j++) {
+				if(ts_rooms.get(i).equals(rooms_components.get(j).getText())) {
+					add_del = false;
+					break;
+				}
+			}
+			if(add_del) {
+				add_room_titledPane(ts_rooms.get(i));
+			}
+		}
+		
+		for (int i=0; i<rooms_components.size(); i++) {
+			add_del = true;
+			for (int j=0; j<ts_rooms.size(); j++) {
+				if(rooms_components.get(i).getText().equals(ts_rooms.get(j))) {
+					add_del = false;
+					break;
+				}
+			}
+			if(add_del) {
+				del_room_titledpane(rooms_components.get(i).getText());
+			}
+		}
+		
+		ts_hash.forEach((key, value) -> {
+			if(hash.containsKey(key)) {
+				if(!hash.get(key).equals(value)) {
+					del_contact_button(hash.get(key), key);
+					add_contact_button(user_name, value, key);
+				}
+			}else {
+				add_contact_button(user_name, value, key);
+			}
+		});
+		
+		((HashMap<String, String>) hash.clone()).forEach((key, value) -> {
+			if(ts_hash.containsKey(key)) {
+				if(!ts_hash.get(key).equals(value)) {
+					del_contact_button(value, key);
+					add_contact_button(user_name, ts_hash.get(key), key);
+				}
+			}else {
+				del_contact_button(value, key);
+			}
+		});
+		
+        vboxOnScroll.applyCss();
+        vboxOnScroll.layout();
+	}
+	
+	private void add_room_titledPane(String room_name) {
 		HBox h = new HBox();
 		
 		Button b_enter = new Button();
@@ -58,7 +115,7 @@ public class ConfigComponentsArrayUtils {
         vboxOnScroll.getChildren().add(tp);
 	}
 	
-	public void add_contact_button(String ts_user_name, String room_name, String contact_name) {
+	private void add_contact_button(String ts_user_name, String room_name, String contact_name) {
 		Button b = new Button();
 		b.setText(contact_name);
 		b.setStyle(ConfigConstants.CONTACT_BUTTON_STYLE);
@@ -80,7 +137,7 @@ public class ConfigComponentsArrayUtils {
 		hash.put(contact_name, room_name);
 	}
 	
-	public void del_room_titledpane(String room_name) {
+	private void del_room_titledpane(String room_name) {
 		for (int i=0; i<rooms_components.size(); i++) {
 			if(rooms_components.get(i).getText().equals(room_name)) {
 				vboxOnScroll.getChildren().remove(rooms_components.get(i));
@@ -90,7 +147,7 @@ public class ConfigComponentsArrayUtils {
 		}
 	}
 	
-	public void del_contact_button(String room_name, String contact_name) {
+	private void del_contact_button(String room_name, String contact_name) {
 		for (int i=0; i<rooms_components.size(); i++) {
 			if(rooms_components.get(i).getText().equals(room_name)) {
 				for (int j=0; j<contacts_components.size(); j++) {

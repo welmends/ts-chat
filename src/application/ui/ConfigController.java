@@ -1,7 +1,6 @@
 package application.ui;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -43,9 +42,6 @@ public class ConfigController extends Thread implements Initializable  {
 	private ChatController chat;
 	
 	// Variables
-	private HashMap<String, String> hash;
-	private List<TitledPane> rooms_components;
-	private List<Button> contacts_components;
 	private ConfigComponentsArrayUtils componentsArray_utils;
 	
 	public void loadFromParent(TupleSpace ts, ChatController chat) {
@@ -56,10 +52,7 @@ public class ConfigController extends Thread implements Initializable  {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// Initialize Objects
-		hash = new HashMap<String, String>();
-		rooms_components = new ArrayList<TitledPane>();
-		contacts_components = new ArrayList<Button>();
-		componentsArray_utils = new ConfigComponentsArrayUtils(this, vboxOnScroll, hash, rooms_components, contacts_components);
+		componentsArray_utils = new ConfigComponentsArrayUtils(this, vboxOnScroll);
 		
 		setupComponents();
 		setAddBtnPressedBehavior();
@@ -81,7 +74,7 @@ public class ConfigController extends Thread implements Initializable  {
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
-					updateSpaceList(ts_rooms, ts_hash);
+					componentsArray_utils.updateComponentsList(ts.get_user_name(), ts_rooms, ts_hash);
 				}
 			});
 			
@@ -98,61 +91,6 @@ public class ConfigController extends Thread implements Initializable  {
 		
 		add_btn.setStyle(ConfigConstants.ADD_BUTTON_STYLE);
 		add_btn.setGraphic(ImageConstants.ADD_BTN_ICON);
-	}
-	
-	private void updateSpaceList(List<String> ts_rooms, HashMap<String, String> ts_hash) {
-		Boolean add_del;
-		
-		for (int i=0; i<ts_rooms.size(); i++) {
-			add_del = true;
-			for (int j=0; j<rooms_components.size(); j++) {
-				if(ts_rooms.get(i).equals(rooms_components.get(j).getText())) {
-					add_del = false;
-					break;
-				}
-			}
-			if(add_del) {
-				componentsArray_utils.add_room_titledPane(ts_rooms.get(i));
-			}
-		}
-		
-		for (int i=0; i<rooms_components.size(); i++) {
-			add_del = true;
-			for (int j=0; j<ts_rooms.size(); j++) {
-				if(rooms_components.get(i).getText().equals(ts_rooms.get(j))) {
-					add_del = false;
-					break;
-				}
-			}
-			if(add_del) {
-				componentsArray_utils.del_room_titledpane(rooms_components.get(i).getText());
-			}
-		}
-		
-		ts_hash.forEach((key, value) -> {
-			if(hash.containsKey(key)) {
-				if(!hash.get(key).equals(value)) {
-					componentsArray_utils.del_contact_button(hash.get(key), key);
-					componentsArray_utils.add_contact_button(ts.get_user_name(), value, key);
-				}
-			}else {
-				componentsArray_utils.add_contact_button(ts.get_user_name(), value, key);
-			}
-		});
-		
-		hash.forEach((key, value) -> {
-			if(ts_hash.containsKey(key)) {
-				if(!ts_hash.get(key).equals(value)) {
-					componentsArray_utils.del_contact_button(value, key);
-					componentsArray_utils.add_contact_button(ts.get_user_name(), ts_hash.get(key), key);
-				}
-			}else {
-				componentsArray_utils.del_contact_button(value, key);
-			}
-		});
-		
-        vboxOnScroll.applyCss();
-        vboxOnScroll.layout();
 	}
 	
 	public void setRoomBtnPressedBehavior(TitledPane tp_room, Button b_enter_room, Button b_leave_room) {
@@ -184,19 +122,14 @@ public class ConfigController extends Thread implements Initializable  {
 	
 	public void setContactBtnPressedBehavior(Button b_contact) {
 		b_contact.setOnAction((event)->{
-			for (int i=0; i<contacts_components.size(); i++) {
-				if(contacts_components.get(i).equals(b_contact)) {
-					ts.set_contact_name(contacts_components.get(i).getText());
-					ts.set_chat_type(TupleSpaceConstants.CONTACT_CHAT);
-					
-					chat.userImageView.setImage(ImageConstants.MONO_USER_ICON);
-					chat.chatLabelContact.setText(ts.get_contact_name());
-					chat.clearChat();
-					chat.loadChat();
-					chat.disableChatTextField(false);
-	        		break;
-				}
-			}
+			ts.set_contact_name(b_contact.getText());
+			ts.set_chat_type(TupleSpaceConstants.CONTACT_CHAT);
+			
+			chat.userImageView.setImage(ImageConstants.MONO_USER_ICON);
+			chat.chatLabelContact.setText(ts.get_contact_name());
+			chat.clearChat();
+			chat.loadChat();
+			chat.disableChatTextField(false);
         });
 	}
 	
