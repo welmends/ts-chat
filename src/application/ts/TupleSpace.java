@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-import javafx.util.Pair;
 import net.jini.space.JavaSpace;
 
 public class TupleSpace extends Thread {
@@ -14,6 +13,7 @@ public class TupleSpace extends Thread {
 	private JavaSpace space_admin;
 	
     private Boolean is_connected;
+    private Boolean chat_type;
     private String user_name;
     private String contact_name;
     private String room_name;
@@ -25,6 +25,7 @@ public class TupleSpace extends Thread {
     // Constructor
 	public TupleSpace() {
 		this.is_connected = false;
+		this.chat_type = null;
 		this.ip = "";
 		this.port = -1;
 		this.user_name = "";
@@ -259,30 +260,66 @@ public class TupleSpace extends Thread {
     // Message Control
     public void send_message(String content) {
         try {
-        	TupleMessage tuple_message = new TupleMessage();
-        	tuple_message.sender_name = get_user_name();
-        	tuple_message.receiver_name = get_contact_name();//OR ROOM
-        	tuple_message.content = content;
+        	TupleMessage tuple_message  = new TupleMessage();
+        	tuple_message.chat_type     = get_chat_type();
+        	tuple_message.content       = content;
+        	tuple_message.sender_name   = get_user_name();
+        	if(get_chat_type()==TupleSpaceConstants.CONTACT_CHAT) {
+        		//CONTACT_CHAT
+            	tuple_message.receiver_name = get_contact_name();
+            	
+        	}else {
+        		//ROOM_CHAT
+            	tuple_message.room_name     = get_room_name();
+            	tuple_message.receivers     = new ArrayList<String>();
+        	}
 			this.space.write(tuple_message, null, TupleSpaceConstants.TIMER_KEEP_MESSAGE);
 		} catch (Exception e) {
 			System.out.println("Error: TupleSpace (send_message)");
 		}
     }
     
-    public Pair<Boolean, String> receive_message() {
-    	Pair<Boolean, String> pair = new Pair<Boolean, String>(false, "<error>");
+    public TupleMessage receive_message() {
         try {
-        	TupleMessage template_message = new TupleMessage();
-        	template_message.sender_name = get_contact_name();//OR ROOM
-        	template_message.receiver_name = get_user_name();
-        	TupleMessage tuple_message = (TupleMessage) this.space.take(template_message, null, TupleSpaceConstants.TIMER_NO_WAIT);
-        	if(tuple_message!=null) {
-        		pair = new Pair<Boolean, String>(true, tuple_message.content);
+        	if(get_chat_type()==null) { return null; }
+        	TupleMessage template_message  = new TupleMessage();
+        	template_message.chat_type     = get_chat_type();
+        	if(get_chat_type()==TupleSpaceConstants.CONTACT_CHAT) {
+        		//CONTACT_CHAT
+        		template_message.sender_name   = get_contact_name();
+        		template_message.receiver_name = get_user_name();
+        		TupleMessage tuple_message = (TupleMessage) this.space.take(template_message, null, TupleSpaceConstants.TIMER_TAKE_MESSAGE);
+            	if(tuple_message!=null) {
+            		return tuple_message;
+            	}else {
+            		return null;
+            	}
+        	}else {
+        		//ROOM_CHAT
+        		template_message.room_name = get_room_name();
+        		TupleMessage tuple_message = (TupleMessage) this.space.take(template_message, null, TupleSpaceConstants.TIMER_TAKE_MESSAGE);
+            	if(tuple_message!=null) {
+            		if(tuple_message.sender_name.equals(get_user_name())) {
+            			return null;
+            		}
+            		if(tuple_message.receivers.contains(get_user_name())) {
+            			return null;
+            		}else {
+            			tuple_message.receivers.add(get_user_name());
+            		}
+            		List<String> contacts = get_contacts_list(get_room_name());
+            		if(tuple_message.receivers.size()<contacts.size()-1) {
+            			this.space.write(tuple_message, null, TupleSpaceConstants.TIMER_KEEP_MESSAGE);
+            		}
+            		return tuple_message;
+            	}else {
+            		return null;
+            	}
         	}
 		} catch (Exception e) {
 			System.out.println("Error: TupleSpace (receive_message)");
+			return null;
 		}
-        return pair;
     }
     
     // Getters
@@ -302,6 +339,13 @@ public class TupleSpace extends Thread {
     	return this.user_name;
     }
     
+    public Boolean get_chat_type() {
+    	try { mutex.acquire(); } catch (Exception e) {}
+    	Boolean type = this.chat_type;
+    	try { mutex.release(); } catch (Exception e) {}
+    	return type;
+    }
+    
     public String get_contact_name() {
     	try { mutex.acquire(); } catch (Exception e) {}
     	String nick = this.contact_name;
@@ -317,6 +361,12 @@ public class TupleSpace extends Thread {
     }
     
     // Setters
+    public void set_chat_type(Boolean type) {
+    	try { mutex.acquire(); } catch (Exception e) {}
+    	this.chat_type = type;
+    	try { mutex.release(); } catch (Exception e) {}
+    }
+    
     public void set_contact_name(String contact_name) {
     	try { mutex.acquire(); } catch (Exception e) {}
     	this.contact_name = contact_name;
@@ -328,5 +378,4 @@ public class TupleSpace extends Thread {
     	this.room_name = room_name;
     	try { mutex.release(); } catch (Exception e) {}
     }
-    
 }

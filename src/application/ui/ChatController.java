@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
+import application.ts.TupleMessage;
 import application.ts.TupleSpace;
 import application.ui.constants.ChatConstants;
 import application.ui.constants.ImageConstants;
@@ -26,7 +27,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.util.Pair;
 
 public class ChatController extends Thread implements Initializable  {
 	
@@ -68,7 +68,7 @@ public class ChatController extends Thread implements Initializable  {
 	
 	@Override
 	public void run() {
-		Pair<Boolean, String> response; 
+		TupleMessage tuple_message;
 		while(true) {
 			try {
 				Thread.sleep(ChatConstants.THREAD_SLEEP_TIME_MILLIS);
@@ -80,9 +80,9 @@ public class ChatController extends Thread implements Initializable  {
 				continue;
 			}
 			
-			response = ts.receive_message();
-			if(response.getKey()) {
-				String message_received = response.getValue();
+			tuple_message = ts.receive_message();
+			if(tuple_message!=null) {
+				String message_received = tuple_message.content;
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
