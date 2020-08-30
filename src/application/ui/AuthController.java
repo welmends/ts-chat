@@ -67,18 +67,26 @@ public class AuthController implements Initializable {
         	Integer port_number = Integer.valueOf(credentials.get(AuthConstants.HASHCODE_PORTNUMBER));
         	
         	ts.setup(ip_address, port_number, nickname);
-        	chat.chatLabelUser.setText(ts.get_my_name());
         	if(!ts.connect()) {
         		main.closeApplication();
         		Alert alert = new Alert(Alert.AlertType.ERROR);
         		alert.setTitle("Connection Fail");
         		alert.setResizable(false);
-        		alert.setHeaderText("Verify if the Apache River service is running\nExiting the application");
+        		alert.setHeaderText("Verify if the Apache River service is running!\nExiting the application...");
         		alert.showAndWait();
         		Platform.exit();
 		        System.exit(0);
         	}else {
-        		ts.init_admin_tuple();
+        		if(!ts.init_admin_tuple()) {
+            		Alert alert = new Alert(Alert.AlertType.WARNING);
+            		alert.setTitle("Invalid username");
+            		alert.setResizable(false);
+            		alert.setHeaderText("The username is invalid. Try another one.");
+            		alert.showAndWait();
+            		return;
+        		}else {
+        			chat.chatLabelUser.setText(ts.get_my_name());
+        		}
         	}
         	
         	closeStage();

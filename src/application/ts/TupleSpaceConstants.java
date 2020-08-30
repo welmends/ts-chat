@@ -5,7 +5,7 @@ import net.jini.space.JavaSpace;
 public class TupleSpaceConstants {
 	public static Integer THREAD_SLEEP_TIME_MILLIS = 2000; // 2sec
 	public static Long TIMER_KEEP_UNDEFINED = Long.MAX_VALUE; // Undefined
-	public static Long TIMER_KEEP_ROOM      = new Long(30 * 1000); // 30sec
+	public static Long TIMER_KEEP_ROOM      = new Long(10 * 1000); // 10min
 	public static Long TIMER_KEEP_MESSAGE   = new Long(5 * 60 * 1000); // 5min
 	public static Long TIMER_TAKE_ADMIN     = new Long(3 * 1000); // 3sec
 	public static Long TIMER_TAKE_ROOM      = new Long(2 * 1000); // 2sec

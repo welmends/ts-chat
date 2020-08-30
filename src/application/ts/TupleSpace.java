@@ -89,18 +89,28 @@ public class TupleSpace extends Thread {
     }
     
     // Admin Control
-    public void init_admin_tuple() {
+    public Boolean init_admin_tuple() {
         try {
         	TupleAdmin template_admin = new TupleAdmin();
         	TupleAdmin tuple_admin = (TupleAdmin) this.space.read(template_admin, null, TupleSpaceConstants.TIMER_TAKE_ADMIN);
         	if(tuple_admin==null) {
         		template_admin.rooms = new ArrayList<String>();
         		template_admin.contacts = new ArrayList<String>();
+        		template_admin.contacts.add(my_name);
         		this.space.write(template_admin, null, TupleSpaceConstants.TIMER_KEEP_UNDEFINED);
+        	}else {
+        		if(tuple_admin.contacts.contains(my_name)) {
+        			return false;
+        		}else {
+        			tuple_admin.contacts.add(my_name);
+        			this.space.take(template_admin, null, TupleSpaceConstants.TIMER_TAKE_ADMIN);
+        			this.space.write(tuple_admin, null, TupleSpaceConstants.TIMER_KEEP_UNDEFINED);
+        		}
         	}
 		} catch (Exception e) {
 			System.out.println("Error: TupleSpace (init_admin_tuple)");
 		}
+        return true;
     }
     
     public HashMap<String, String> get_hash_rooms_contacts() {

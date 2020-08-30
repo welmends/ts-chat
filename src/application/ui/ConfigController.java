@@ -66,8 +66,6 @@ public class ConfigController extends Thread implements Initializable  {
 	@Override
 	public void run() {
 		while(true) {
-			System.out.println("> rooms_components: "+rooms_components.size());
-			System.out.println("> contacts_components: "+contacts_components.size());
 			try {
 				Thread.sleep(ConfigConstants.THREAD_SLEEP_TIME_MILLIS);
 			} catch (InterruptedException e) {
@@ -96,38 +94,38 @@ public class ConfigController extends Thread implements Initializable  {
 	}
 	
 	private void updateSpaceList(List<String> ts_rooms, HashMap<String, String> ts_hash) {
-		Boolean add_rmv;
+		Boolean add_del;
 		
 		for (int i=0; i<ts_rooms.size(); i++) {
-			add_rmv = true;
+			add_del = true;
 			for (int j=0; j<rooms_components.size(); j++) {
 				if(ts_rooms.get(i).equals(rooms_components.get(j).getText())) {
-					add_rmv = false;
+					add_del = false;
 					break;
 				}
 			}
-			if(add_rmv) {
+			if(add_del) {
 				add_room_titledPane(ts_rooms.get(i));
 			}
 		}
 		
 		for (int i=0; i<rooms_components.size(); i++) {
-			add_rmv = true;
+			add_del = true;
 			for (int j=0; j<ts_rooms.size(); j++) {
 				if(rooms_components.get(i).getText().equals(ts_rooms.get(j))) {
-					add_rmv = false;
+					add_del = false;
 					break;
 				}
 			}
-			if(add_rmv) {
-				rmv_room_titledpane(rooms_components.get(i).getText());
+			if(add_del) {
+				del_room_titledpane(rooms_components.get(i).getText());
 			}
 		}
 		
 		ts_hash.forEach((key, value) -> {
 			if(hash.containsKey(key)) {
 				if(!hash.get(key).equals(value)) {
-					rmv_contact_button(hash.get(key), key);
+					del_contact_button(hash.get(key), key);
 					add_contact_button(value, key);
 				}
 			}else {
@@ -139,6 +137,7 @@ public class ConfigController extends Thread implements Initializable  {
         contactsVBoxOnScroll.layout();
 	}
 	
+	// Components Add and Del
 	private void add_room_titledPane(String room_name) {
 		TitledPane tp = new TitledPane();
 		tp.setText(room_name);
@@ -170,7 +169,7 @@ public class ConfigController extends Thread implements Initializable  {
 		hash.put(contact_name, room_name);
 	}
 	
-	private void rmv_room_titledpane(String room_name) {
+	private void del_room_titledpane(String room_name) {
 		for (int i=0; i<rooms_components.size(); i++) {
 			if(rooms_components.get(i).getText().equals(room_name)) {
 				contactsVBoxOnScroll.getChildren().remove(rooms_components.get(i));
@@ -180,7 +179,7 @@ public class ConfigController extends Thread implements Initializable  {
 		}
 	}
 	
-	private void rmv_contact_button(String room_name, String contact_name) {
+	private void del_contact_button(String room_name, String contact_name) {
 		for (int i=0; i<rooms_components.size(); i++) {
 			if(rooms_components.get(i).getText().equals(room_name)) {
 				for (int j=0; j<contacts_components.size(); j++) {
@@ -199,6 +198,7 @@ public class ConfigController extends Thread implements Initializable  {
 		hash.remove(contact_name, room_name);
 	}
 	
+	// Behaviors
 	private void setAddBtnPressedBehavior() {
 		add_btn.setOnAction((event)->{
 			String room_name = add_tf.getText();
