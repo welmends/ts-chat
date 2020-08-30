@@ -146,7 +146,7 @@ public class ConfigController extends Thread implements Initializable  {
 			ts.select_room(tp_room.getText());
 			ts.set_chat_type(TupleSpaceConstants.ROOM_CHAT);
 			
-			chat.chatLabelContact.setText(ts.get_room_name());
+			chat.chatLabelContact.setText(ConfigConstants.CHAT_LABEL_ROOM_PREFIX + ts.get_room_name());
 			chat.clearChat();
 			chat.loadChat();
 			chat.disableChatTextField(false);
@@ -160,7 +160,7 @@ public class ConfigController extends Thread implements Initializable  {
 					ts.set_contact_name(contacts_components.get(i).getText());
 					ts.set_chat_type(TupleSpaceConstants.CONTACT_CHAT);
 					
-					chat.chatLabelContact.setText(ts.get_contact_name());
+					chat.chatLabelContact.setText(ConfigConstants.CHAT_LABEL_CONTACT_PREFIX + ts.get_contact_name());
 					chat.clearChat();
 					chat.loadChat();
 					chat.disableChatTextField(false);
