@@ -156,7 +156,7 @@ public class ConfigController extends Thread implements Initializable  {
 		b.setText(contact_name);
 		b.setPrefWidth(ConfigConstants.CONTACT_BUTTON_PREF_WIDTH);
 		setContactBtnPressedBehavior(b);
-		if(contact_name.equals(ts.get_my_name())) {
+		if(contact_name.equals(ts.get_user_name())) {
 			b.setDisable(true);
 		}
 		

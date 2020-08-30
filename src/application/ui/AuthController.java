@@ -62,11 +62,11 @@ public class AuthController implements Initializable {
     	enterButton.setOnAction((event)->{
         	disableComponents(true);
         	acquireCredentials();
-        	String nickname     = credentials.get(AuthConstants.HASHCODE_NICKNAME);
+        	String username     = credentials.get(AuthConstants.HASHCODE_USERNAME);
         	String ip_address   = credentials.get(AuthConstants.HASHCODE_IPADDRESS);
         	Integer port_number = Integer.valueOf(credentials.get(AuthConstants.HASHCODE_PORTNUMBER));
         	
-        	ts.setup(ip_address, port_number, nickname);
+        	ts.setup(ip_address, port_number, username);
         	if(!ts.connect()) {
         		main.closeApplication();
         		Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -85,7 +85,7 @@ public class AuthController implements Initializable {
             		alert.showAndWait();
             		return;
         		}else {
-        			chat.chatLabelUser.setText(ts.get_my_name());
+        			chat.chatLabelUser.setText(ts.get_user_name());
         		}
         	}
         	
@@ -103,9 +103,9 @@ public class AuthController implements Initializable {
     private void acquireCredentials() {
     	credentials.clear();
     	if(nicknameTF.getText().equals("")) {
-    		credentials.put(AuthConstants.HASHCODE_NICKNAME, AuthConstants.DEFAULT_NICKNAME);
+    		credentials.put(AuthConstants.HASHCODE_USERNAME, AuthConstants.DEFAULT_NICKNAME);
     	}else {
-    		credentials.put(AuthConstants.HASHCODE_NICKNAME, nicknameTF.getText());
+    		credentials.put(AuthConstants.HASHCODE_USERNAME, nicknameTF.getText());
     	}
     	if(ipaddressTF.getText().equals("")) {
     		credentials.put(AuthConstants.HASHCODE_IPADDRESS, AuthConstants.DEFAULT_IPADDRESS);

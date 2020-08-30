@@ -14,7 +14,7 @@ public class TupleSpace extends Thread {
 	private JavaSpace space_admin;
 	
     private Boolean is_connected;
-    private String my_name;
+    private String user_name;
     private String contact_name;
     private String room_name;
     private String ip;
@@ -27,7 +27,7 @@ public class TupleSpace extends Thread {
 		this.is_connected = false;
 		this.ip = "";
 		this.port = -1;
-		this.my_name = "";
+		this.user_name = "";
 		this.contact_name = "";
 		this.room_name = "";
 		this.mutex = new Semaphore(1);
@@ -69,7 +69,7 @@ public class TupleSpace extends Thread {
 	public void setup(String ip, Integer port, String my_name) {
 		this.ip = ip;
 		this.port = port;
-		this.my_name = my_name;//VERIFY IF ALREADY EXISTS AND INSERT IN tuple_admin
+		this.user_name = my_name;//VERIFY IF ALREADY EXISTS AND INSERT IN tuple_admin
 	}
 	
     public Boolean connect(){
@@ -91,8 +91,8 @@ public class TupleSpace extends Thread {
         	TupleAdmin template_admin = new TupleAdmin();
         	TupleAdmin tuple_admin = (TupleAdmin) this.space.take(template_admin, null, TupleSpaceConstants.TIMER_TAKE_ADMIN);
         	if(tuple_admin!=null) {
-        		if(tuple_admin.contacts.contains(my_name)) {
-        			tuple_admin.contacts.remove(my_name);
+        		if(tuple_admin.contacts.contains(user_name)) {
+        			tuple_admin.contacts.remove(user_name);
         			this.space.take(template_admin, null, TupleSpaceConstants.TIMER_TAKE_ADMIN);
         			this.space.write(tuple_admin, null, TupleSpaceConstants.TIMER_KEEP_UNDEFINED);
         		}
@@ -102,8 +102,8 @@ public class TupleSpace extends Thread {
         	template_room.room_name = room_name;
         	TupleRoom tuple_room = (TupleRoom) this.space.take(template_room, null, TupleSpaceConstants.TIMER_TAKE_ROOM);
         	if(tuple_room!=null) {
-        		if(tuple_room.contacts.contains(my_name)) {
-        			tuple_room.contacts.remove(my_name);
+        		if(tuple_room.contacts.contains(user_name)) {
+        			tuple_room.contacts.remove(user_name);
         			this.space.take(template_room, null, TupleSpaceConstants.TIMER_TAKE_ROOM);
             		if(tuple_room.contacts.size()==0) {
             			this.space.write(tuple_room, null, TupleSpaceConstants.TIMER_KEEP_ROOM);
@@ -126,13 +126,13 @@ public class TupleSpace extends Thread {
         	if(tuple_admin==null) {
         		template_admin.rooms = new ArrayList<String>();
         		template_admin.contacts = new ArrayList<String>();
-        		template_admin.contacts.add(my_name);
+        		template_admin.contacts.add(user_name);
         		this.space.write(template_admin, null, TupleSpaceConstants.TIMER_KEEP_UNDEFINED);
         	}else {
-        		if(tuple_admin.contacts.contains(my_name)) {
+        		if(tuple_admin.contacts.contains(user_name)) {
         			return false;
         		}else {
-        			tuple_admin.contacts.add(my_name);
+        			tuple_admin.contacts.add(user_name);
         			this.space.take(template_admin, null, TupleSpaceConstants.TIMER_TAKE_ADMIN);
         			this.space.write(tuple_admin, null, TupleSpaceConstants.TIMER_KEEP_UNDEFINED);
         		}
@@ -232,7 +232,7 @@ public class TupleSpace extends Thread {
         		template_room.room_name = this.room_name;
         		tuple_room = (TupleRoom) this.space.take(template_room, null, TupleSpaceConstants.TIMER_TAKE_ROOM);
         		if(tuple_room!=null) {
-        			tuple_room.contacts.remove(this.my_name);
+        			tuple_room.contacts.remove(this.user_name);
             		if(tuple_room.contacts.size()==0) {
             			this.space.write(tuple_room, null, TupleSpaceConstants.TIMER_KEEP_ROOM);
             		}else {
@@ -244,7 +244,7 @@ public class TupleSpace extends Thread {
         	template_room.room_name = this.room_name;
     		tuple_room = (TupleRoom) this.space.take(template_room, null, TupleSpaceConstants.TIMER_TAKE_ROOM);
     		if(tuple_room!=null) {
-    			tuple_room.contacts.add(this.my_name);
+    			tuple_room.contacts.add(this.user_name);
         		if(tuple_room.contacts.size()==0) {
         			this.space.write(tuple_room, null, TupleSpaceConstants.TIMER_KEEP_ROOM);
         		}else {
@@ -260,7 +260,7 @@ public class TupleSpace extends Thread {
     public void send_message(String content) {
         try {
         	TupleMessage tuple_message = new TupleMessage();
-        	tuple_message.sender_name = get_my_name();
+        	tuple_message.sender_name = get_user_name();
         	tuple_message.receiver_name = get_contact_name();//OR ROOM
         	tuple_message.content = content;
 			this.space.write(tuple_message, null, TupleSpaceConstants.TIMER_KEEP_MESSAGE);
@@ -274,7 +274,7 @@ public class TupleSpace extends Thread {
         try {
         	TupleMessage template_message = new TupleMessage();
         	template_message.sender_name = get_contact_name();//OR ROOM
-        	template_message.receiver_name = get_my_name();
+        	template_message.receiver_name = get_user_name();
         	TupleMessage tuple_message = (TupleMessage) this.space.take(template_message, null, TupleSpaceConstants.TIMER_NO_WAIT);
         	if(tuple_message!=null) {
         		pair = new Pair<Boolean, String>(true, tuple_message.content);
@@ -298,8 +298,8 @@ public class TupleSpace extends Thread {
     	return this.port;
     }
     
-    public String get_my_name() {
-    	return this.my_name;
+    public String get_user_name() {
+    	return this.user_name;
     }
     
     public String get_contact_name() {

@@ -19,7 +19,7 @@
       </HBox>
       <HBox alignment="CENTER">
          <children>
-            <Label prefWidth="80.0" text="Nickname" />
+            <Label prefWidth="80.0" text="Username" />
             <TextField fx:id="nicknameTF" promptText="Anonymous" />
          </children>
       </HBox>
