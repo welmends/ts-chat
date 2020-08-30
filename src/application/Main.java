@@ -33,7 +33,7 @@ public class Main extends Application {
 		root = loader.load();
 		
         this.primaryStage.getIcons().add(ImageConstants.CHAT_TOP_ICON);
-        this.primaryStage.setTitle("MOM Chat");
+        this.primaryStage.setTitle("TS Chat");
 		this.primaryStage.setResizable(false);
 		this.primaryStage.setScene(new Scene(root, 700, 550));
 		this.primaryStage.show();
