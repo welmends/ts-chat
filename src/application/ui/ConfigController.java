@@ -144,8 +144,8 @@ public class ConfigController extends Thread implements Initializable  {
         vboxOnScroll.layout();
 	}
 	
-	public void setRoomBtnPressedBehavior(Button b_room, TitledPane tp_room) {
-		b_room.setOnAction((event)->{
+	public void setRoomBtnPressedBehavior(TitledPane tp_room, Button b_enter_room, Button b_leave_room) {
+		b_enter_room.setOnAction((event)->{
 			ts.select_room(tp_room.getText());
 			ts.set_chat_type(TupleSpaceConstants.ROOM_CHAT);
 			
@@ -154,6 +154,19 @@ public class ConfigController extends Thread implements Initializable  {
 			chat.clearChat();
 			chat.loadChat();
 			chat.disableChatTextField(false);
+        });
+		
+		b_leave_room.setOnAction((event)->{
+			if(ts.get_room_name().equals(tp_room.getText())) {
+				ts.deselect_room();
+				ts.set_chat_type(null);
+				
+				componentsArray_utils.del_contact_button(tp_room.getText(), ts.get_user_name());
+				chat.userImageView.setImage(null);
+				chat.chatLabelContact.setText(null);
+				chat.clearChat();
+				chat.disableChatTextField(true);
+			}
         });
     }
 	

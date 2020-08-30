@@ -94,25 +94,11 @@ public class TupleSpace extends Thread {
         	if(tuple_admin!=null) {
         		if(tuple_admin.contacts.contains(user_name)) {
         			tuple_admin.contacts.remove(user_name);
-        			this.space.take(template_admin, null, TupleSpaceConstants.TIMER_TAKE_ADMIN);
         			this.space.write(tuple_admin, null, TupleSpaceConstants.TIMER_KEEP_UNDEFINED);
         		}
         	}
     		//Update tuple_room
-        	TupleRoom template_room = new TupleRoom();
-        	template_room.room_name = room_name;
-        	TupleRoom tuple_room = (TupleRoom) this.space.take(template_room, null, TupleSpaceConstants.TIMER_TAKE_ROOM);
-        	if(tuple_room!=null) {
-        		if(tuple_room.contacts.contains(user_name)) {
-        			tuple_room.contacts.remove(user_name);
-        			this.space.take(template_room, null, TupleSpaceConstants.TIMER_TAKE_ROOM);
-            		if(tuple_room.contacts.size()==0) {
-            			this.space.write(tuple_room, null, TupleSpaceConstants.TIMER_KEEP_ROOM);
-            		}else {
-            			this.space.write(tuple_room, null, TupleSpaceConstants.TIMER_KEEP_UNDEFINED);
-            		}
-        		}
-        	}
+        	deselect_room();
 		} catch (Exception e) {
 			System.out.println("Error: TupleSpace (disconnect)");
 		}
@@ -253,7 +239,23 @@ public class TupleSpace extends Thread {
         		}
     		}
 		} catch (Exception e) {
-			System.out.println("Error: TupleSpace (update_room)");
+			System.out.println("Error: TupleSpace (select_room)");
+		}
+    }
+    
+    public void deselect_room() {
+        try {
+        	TupleRoom template_room = new TupleRoom();
+        	template_room.room_name = get_room_name();
+        	TupleRoom tuple_room = (TupleRoom) this.space.take(template_room, null, TupleSpaceConstants.TIMER_TAKE_ROOM);
+        	if(tuple_room!=null) {
+        		if(tuple_room.contacts.contains(get_user_name())) {
+        			tuple_room.contacts.remove(get_user_name());
+        			this.space.write(tuple_room, null, TupleSpaceConstants.TIMER_KEEP_ROOM);
+        		}
+        	}
+		} catch (Exception e) {
+			System.out.println("Error: TupleSpace (deselect_room)");
 		}
     }
     

@@ -8,6 +8,7 @@ import application.ui.constants.ConfigConstants;
 import javafx.beans.binding.Bindings;
 import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class ConfigComponentsArrayUtils {
@@ -28,22 +29,29 @@ public class ConfigComponentsArrayUtils {
 	}
 	
 	public void add_room_titledPane(String room_name) {
-		Button b = new Button();
-		b.setText(ConfigConstants.ROOM_BUTTON_TEXT);
-		b.setStyle(ConfigConstants.ROOM_BUTTON_STYLE);
-		b.setContentDisplay(ConfigConstants.ROOM_BUTTON_CONTENT_DISPLAY);
+		HBox h = new HBox();
+		
+		Button b_enter = new Button();
+		b_enter.setText(ConfigConstants.ENTER_ROOM_BUTTON_TEXT);
+		b_enter.setStyle(ConfigConstants.ROOM_BUTTON_STYLE);
+		
+		Button b_leave = new Button();
+		b_leave.setText(ConfigConstants.LEAVE_ROOM_BUTTON_TEXT);
+		b_leave.setStyle(ConfigConstants.ROOM_BUTTON_STYLE);
+
+		h.getChildren().addAll(b_enter, b_leave);
 		
 		TitledPane tp = new TitledPane();
 		tp.setText(room_name);
-		tp.setStyle(ConfigConstants.TITLED_PANE_STYLE);
-		tp.setGraphic(b);
+		tp.setStyle(ConfigConstants.TITLED_PANE_TEXT_STYLE);
+		tp.setGraphic(h);
 		tp.setContent(new VBox());
 		
-		b.translateXProperty().bind(Bindings.createDoubleBinding(() -> 
-			tp.getWidth() - b.getLayoutX() - b.getWidth() - ConfigConstants.ROOM_BUTTON_GRAPHIC_MARGIN_RIGHT, tp.widthProperty())
+		h.translateXProperty().bind(Bindings.createDoubleBinding(() -> 
+			tp.getWidth() - h.getLayoutX() - h.getWidth() - ConfigConstants.ROOM_BUTTON_GRAPHIC_MARGIN_RIGHT, tp.widthProperty())
 		);
 		
-		config.setRoomBtnPressedBehavior(b, tp);
+		config.setRoomBtnPressedBehavior(tp, b_enter, b_leave);
 		
 		rooms_components.add(tp);
 		
