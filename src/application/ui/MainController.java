@@ -79,7 +79,7 @@ public class MainController implements Initializable {
 	}
 	
 	public void closeApplication() {
-		//ts.disconnect(); ****
+		ts.disconnect();
 	}
 
     private Boolean authentication() {
