@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 
 public class ChatConstants {
@@ -24,15 +25,22 @@ public class ChatConstants {
 	// Time Label
 	public static String SPACE_FOR_LABEL_TIME = "          ";
 	public static String LABEL_TIME_SIMPLE_DATE_FORMAT = "hh:mm a";
-	public static Font LABEL_TIME_FONT = Font.font("System", FontPosture.ITALIC, 9);
+	public static Font FONT_LABEL_TIME = Font.font("System", FontPosture.ITALIC, 9);
 	public static Insets PADDING_LABEL_TIME = new Insets(0,6,2,0);
 	public static TextAlignment TEXT_ALIGNMENT_LABEL_TIME = TextAlignment.RIGHT;
 	public static Pos ALIGNMENT_STACK_PANE_LABEL_TIME = Pos.BOTTOM_RIGHT;
 	
+	// Sender Label
+	public static Font FONT_LABEL_SENDER = Font.font("System", FontWeight.BOLD, 10);
+	public static Insets PADDING_LABEL_SENDER = new Insets(0,0,2,6);
+	public static TextAlignment TEXT_ALIGNMENT_LABEL_SENDER = TextAlignment.LEFT;
+	public static Pos ALIGNMENT_STACK_PANE_LABEL_SENDER = Pos.TOP_LEFT;
+	
 	// Message Receive
 	public static Color COLOR_LABEL_TEXT_RECEIVE = Color.BLACK;
 	public static String STYLE_LABEL_TEXT_RECEIVE = "-fx-font-family: 'Arial'; -fx-font-weight:bold; -fx-background-color: #ffffff; -fx-background-radius: 0 20 20 20;";
-	public static Insets PADDING_LABEL_TEXT_RECEIVE = new Insets(10, 10, 10, 10);
+	public static Insets PADDING_LABEL_TEXT_RECEIVE_ROOM = new Insets(17, 10, 10, 10);
+	public static Insets PADDING_LABEL_TEXT_RECEIVE_CONTACT = new Insets(10, 10, 10, 10);
 	public static Pos ALIGNMENT_LABEL_TEXT_RECEIVE = Pos.CENTER;
 	
 	public static Insets PADDING_STACK_PANE_RECEIVE = new Insets(0, 0, 5, 0);

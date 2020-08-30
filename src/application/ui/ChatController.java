@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 
 import application.ts.TupleMessage;
 import application.ts.TupleSpace;
+import application.ts.TupleSpaceConstants;
 import application.ui.constants.ChatConstants;
 import application.ui.constants.ImageConstants;
 import application.ui.utils.SoundUtils;
@@ -82,11 +83,19 @@ public class ChatController extends Thread implements Initializable  {
 			
 			tuple_message = ts.receive_message();
 			if(tuple_message!=null) {
+				Boolean chat_type = tuple_message.chat_type;
 				String message_received = tuple_message.content;
+				String sender_name = tuple_message.sender_name;
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						updateChatOnReceive(message_received);
+						if(chat_type.equals(TupleSpaceConstants.ROOM_CHAT)) {
+							// ROOM_CHAT
+							updateChatOnReceive(message_received, sender_name);
+						}else {
+							// CONTACT_CHAT
+							updateChatOnReceive(message_received);
+						}
 						//store on storage **** (example on mom-chat project)
 					}
 				});
@@ -129,7 +138,7 @@ public class ChatController extends Thread implements Initializable  {
 	            if (key.getCode().equals(KeyCode.ENTER) && chatTextField.getText().length()>0){
 	            	// Get text
 	            	String message_send = chatTextField.getText();
-	            			
+	            	
 	            	// Send Locally
 	            	updateChatOnSend(message_send);
 	            	
@@ -159,7 +168,7 @@ public class ChatController extends Thread implements Initializable  {
         txt.setAlignment(ChatConstants.ALIGNMENT_LABEL_TEXT_SEND);
         
         Label time = new Label(new SimpleDateFormat(ChatConstants.LABEL_TIME_SIMPLE_DATE_FORMAT).format(new Date()));
-        time.setFont(ChatConstants.LABEL_TIME_FONT);
+        time.setFont(ChatConstants.FONT_LABEL_TIME);
         time.setPadding(ChatConstants.PADDING_LABEL_TIME);
         time.setTextAlignment(ChatConstants.TEXT_ALIGNMENT_LABEL_TIME);
         
@@ -192,11 +201,11 @@ public class ChatController extends Thread implements Initializable  {
         txt.setWrapText(true);
         txt.setTextFill(ChatConstants.COLOR_LABEL_TEXT_RECEIVE);
         txt.setStyle(ChatConstants.STYLE_LABEL_TEXT_RECEIVE);
-        txt.setPadding(ChatConstants.PADDING_LABEL_TEXT_RECEIVE);
+        txt.setPadding(ChatConstants.PADDING_LABEL_TEXT_RECEIVE_CONTACT);
         txt.setAlignment(ChatConstants.ALIGNMENT_LABEL_TEXT_RECEIVE);
     	
         Label time = new Label(new SimpleDateFormat(ChatConstants.LABEL_TIME_SIMPLE_DATE_FORMAT).format(new Date()));
-        time.setFont(ChatConstants.LABEL_TIME_FONT);
+        time.setFont(ChatConstants.FONT_LABEL_TIME);
         time.setPadding(ChatConstants.PADDING_LABEL_TIME);
         time.setTextAlignment(ChatConstants.TEXT_ALIGNMENT_LABEL_TIME);
         
@@ -220,6 +229,56 @@ public class ChatController extends Thread implements Initializable  {
         
         // Adjust width of time label through padding
         time.setPadding(new Insets(0,sp.getWidth()-txt.getWidth()+6,2,0));
+	}
+	
+	private void updateChatOnReceive(String text_message, String sender_name) {
+    	// Update chat components
+		Label txt = new Label("");
+		int needed_length = sender_name.length()+2;
+		if(needed_length>ChatConstants.SPACE_FOR_LABEL_TIME.length()) {
+			txt.setText(text_message+new String(new char[needed_length]).replace('\0', ' '));
+		}else {
+			txt.setText(text_message+ChatConstants.SPACE_FOR_LABEL_TIME);
+		}
+        txt.setWrapText(true);
+        txt.setTextFill(ChatConstants.COLOR_LABEL_TEXT_RECEIVE);
+        txt.setStyle(ChatConstants.STYLE_LABEL_TEXT_RECEIVE);
+        txt.setPadding(ChatConstants.PADDING_LABEL_TEXT_RECEIVE_ROOM);
+        txt.setAlignment(ChatConstants.ALIGNMENT_LABEL_TEXT_RECEIVE);
+    	
+        Label time = new Label(new SimpleDateFormat(ChatConstants.LABEL_TIME_SIMPLE_DATE_FORMAT).format(new Date()));
+        time.setFont(ChatConstants.FONT_LABEL_TIME);
+        time.setPadding(ChatConstants.PADDING_LABEL_TIME);
+        time.setTextAlignment(ChatConstants.TEXT_ALIGNMENT_LABEL_TIME);
+        
+        Label sender = new Label(sender_name);
+        sender.setFont(ChatConstants.FONT_LABEL_SENDER);
+        sender.setPadding(ChatConstants.PADDING_LABEL_SENDER);
+        sender.setTextAlignment(ChatConstants.TEXT_ALIGNMENT_LABEL_SENDER);
+        
+        StackPane sp = new StackPane();
+        sp.setPadding(ChatConstants.PADDING_STACK_PANE_RECEIVE);
+        sp.getChildren().add(txt);
+        sp.getChildren().add(time);
+        sp.getChildren().add(sender);
+        StackPane.setAlignment(txt, ChatConstants.ALIGNMENT_STACK_PANE_RECEIVE);
+        StackPane.setAlignment(time, ChatConstants.ALIGNMENT_STACK_PANE_LABEL_TIME);
+        StackPane.setAlignment(sender, ChatConstants.ALIGNMENT_STACK_PANE_LABEL_SENDER);
+        
+        // Receive Locally
+        soundUtils.playReceiveSound();
+		chatVBoxOnScroll.getChildren().addAll(sp);
+		
+		// Find the width and height of the component before the Stage has been shown
+		chatVBoxOnScroll.applyCss();
+		chatVBoxOnScroll.layout();
+        
+        // Limit the component height
+        sp.setMinHeight(sp.getHeight());
+        
+        // Adjust width of time label through padding
+        time.setPadding(new Insets(0,sp.getWidth()-txt.getWidth()+6,2,0));
+        //sender.setPadding(new Insets(0,sp.getWidth()-txt.getWidth()+6,2,0));
 	}
 	
 	public void disableChatTextField(Boolean b) {

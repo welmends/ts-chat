@@ -264,7 +264,7 @@ public class TupleSpace extends Thread {
         	tuple_message.chat_type     = get_chat_type();
         	tuple_message.content       = content;
         	tuple_message.sender_name   = get_user_name();
-        	if(get_chat_type()==TupleSpaceConstants.CONTACT_CHAT) {
+        	if(get_chat_type().equals(TupleSpaceConstants.CONTACT_CHAT)) {
         		//CONTACT_CHAT
             	tuple_message.receiver_name = get_contact_name();
             	
@@ -284,7 +284,7 @@ public class TupleSpace extends Thread {
         	if(get_chat_type()==null) { return null; }
         	TupleMessage template_message  = new TupleMessage();
         	template_message.chat_type     = get_chat_type();
-        	if(get_chat_type()==TupleSpaceConstants.CONTACT_CHAT) {
+        	if(get_chat_type().equals(TupleSpaceConstants.CONTACT_CHAT)) {
         		//CONTACT_CHAT
         		template_message.sender_name   = get_contact_name();
         		template_message.receiver_name = get_user_name();
