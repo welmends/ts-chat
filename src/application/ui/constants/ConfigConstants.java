@@ -1,10 +1,11 @@
 package application.ui.constants;
 
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.paint.Color;
 
 public class ConfigConstants {
 	// Sleep
-	public static Integer THREAD_SLEEP_TIME_MILLIS = 1000;
+	public static Integer THREAD_SLEEP_TIME_MILLIS = 500;
 	
 	// Colors
 	public static Color COLOR_ONLINE   = Color.GREEN;
@@ -13,4 +14,9 @@ public class ConfigConstants {
 	
 	// Buttons Attributes
 	public static Double CONTACT_BUTTON_PREF_WIDTH = 195.0;
+	public static String ROOM_BUTTON_TEXT = "Enter";
+	public static String ROOM_BUTTON_STYLE = "-fx-font-family: 'Arial'; -fx-font-size: 8pt; -fx-font-weight:bold; -fx-text-fill: #555555;";
+	public static ContentDisplay ROOM_BUTTON_CONTENT_DISPLAY = ContentDisplay.RIGHT;
+	public static Double ROOM_BUTTON_GRAPHIC_MARGIN_RIGHT = 10.0;
+	
 }

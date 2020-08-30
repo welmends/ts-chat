@@ -10,6 +10,7 @@ import application.ts.TupleSpace;
 import application.ui.constants.ConfigConstants;
 import application.ui.constants.ImageConstants;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -139,20 +140,24 @@ public class ConfigController extends Thread implements Initializable  {
 	
 	// Components Add and Del
 	private void add_room_titledPane(String room_name) {
+		Button b = new Button(ConfigConstants.ROOM_BUTTON_TEXT);
+		b.setStyle(ConfigConstants.ROOM_BUTTON_STYLE);
+		b.setContentDisplay(ConfigConstants.ROOM_BUTTON_CONTENT_DISPLAY);
+		
 		TitledPane tp = new TitledPane();
 		tp.setText(room_name);
+		tp.setGraphic(b);
 		tp.setContent(new VBox());
-		setRoomTtlPanePressedBehavior(tp);
+		
+		setRoomBtnPressedBehavior(b, tp);
 		
 		rooms_components.add(tp);
 		
         contactsVBoxOnScroll.getChildren().add(tp);
 	}
 	
-	
 	private void add_contact_button(String room_name, String contact_name) {
 		Button b = new Button();
-		
 		b.setText(contact_name);
 		b.setPrefWidth(ConfigConstants.CONTACT_BUTTON_PREF_WIDTH);
 		setContactBtnPressedBehavior(b);
@@ -217,17 +222,20 @@ public class ConfigController extends Thread implements Initializable  {
         });
     }
 	
-	private void setRoomTtlPanePressedBehavior(TitledPane tp) {
-		tp.setOnMouseClicked((event)->{
-			ts.update_room(tp.getText());
+	private void setRoomBtnPressedBehavior(Button b_room, TitledPane tp_room) {
+		b_room.setOnAction((event)->{
+			ts.update_room(tp_room.getText());
         });
-	}
+		
+		b_room.translateXProperty().bind(Bindings.createDoubleBinding(() -> 
+			tp_room.getWidth() - b_room.getLayoutX() - b_room.getWidth() - ConfigConstants.ROOM_BUTTON_GRAPHIC_MARGIN_RIGHT, 
+			tp_room.widthProperty()));
+    }
 	
-	private void setContactBtnPressedBehavior(Button b) {
-		b.setOnAction((event)->{
-    		// Select contact
+	private void setContactBtnPressedBehavior(Button b_contact) {
+		b_contact.setOnAction((event)->{
 			for (int i=0; i<contacts_components.size(); i++) {
-				if(contacts_components.get(i).equals(b)) {
+				if(contacts_components.get(i).equals(b_contact)) {
 					ts.set_contact_name(contacts_components.get(i).getText());
 					chat.chatLabelContact.setText(ts.get_contact_name());
 					chat.clearChat();
