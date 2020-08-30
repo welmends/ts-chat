@@ -120,6 +120,7 @@ public class ChatController extends Thread implements Initializable  {
 		
 		chatImageView.setImage(ImageConstants.MONO_USER_ICON);
 		
+		chatTextField.setStyle(ChatConstants.STYLE_TEXT_FIELD_CHAT);
 		chatScrollPane.setStyle(ChatConstants.STYLE_SCROLL_PANE_CHAT);
 		chatVBoxOnScroll.setStyle(ChatConstants.STYLE_VBOX_CHAT);
 	}

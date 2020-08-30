@@ -94,6 +94,9 @@ public class ConfigController extends Thread implements Initializable  {
 		
 		chatImageView.setImage(ImageConstants.CHAT_TOP_ICON);
 		
+		add_tf.setStyle(ConfigConstants.ADD_TEXT_FIELD_STYLE);
+		
+		add_btn.setStyle(ConfigConstants.ADD_BUTTON_STYLE);
 		add_btn.setGraphic(ImageConstants.ADD_BTN_ICON);
 	}
 	

@@ -30,7 +30,7 @@ public class ConfigComponentsArrayUtils {
 	public void add_room_titledPane(String room_name) {
 		Button b = new Button();
 		b.setText(ConfigConstants.ROOM_BUTTON_TEXT);
-		b.setStyle(ConfigConstants.BUTTON_STYLE);
+		b.setStyle(ConfigConstants.ROOM_BUTTON_STYLE);
 		b.setContentDisplay(ConfigConstants.ROOM_BUTTON_CONTENT_DISPLAY);
 		
 		TitledPane tp = new TitledPane();
@@ -53,7 +53,7 @@ public class ConfigComponentsArrayUtils {
 	public void add_contact_button(String ts_user_name, String room_name, String contact_name) {
 		Button b = new Button();
 		b.setText(contact_name);
-		b.setStyle(ConfigConstants.BUTTON_STYLE);
+		b.setStyle(ConfigConstants.CONTACT_BUTTON_STYLE);
 		b.setPrefWidth(ConfigConstants.CONTACT_BUTTON_PREF_WIDTH);
 		config.setContactBtnPressedBehavior(b);
 		if(contact_name.equals(ts_user_name)) {

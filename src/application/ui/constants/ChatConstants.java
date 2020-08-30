@@ -15,6 +15,7 @@ public class ChatConstants {
 	// Components Style
 	public static String STYLE_CHAT_LABEL_USER = "-fx-font-family: 'Arial'; -fx-font-weight:bold; -fx-text-fill: #555555;";
 	public static String STYLE_CHAT_LABEL_CONTACT = "-fx-font-family: 'Arial'; -fx-font-weight:bold; -fx-text-fill: #555555;";
+	public static String STYLE_TEXT_FIELD_CHAT = "-fx-background-radius: 5em;";
 	public static String STYLE_SCROLL_PANE_CHAT = "-fx-background-color:#dddddd; -fx-background-radius: 10 10 10 10; -fx-border-color: #999999; -fx-border-width: 2; -fx-border-radius: 5 5 5 5;";
 	public static String STYLE_VBOX_CHAT = "-fx-background-color:#dddddd;";
 	
