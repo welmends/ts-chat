@@ -1,6 +1,13 @@
 package application.ts;
 
+import net.jini.space.JavaSpace;
+
 public class TupleSpaceConstants {
-	public static Integer TIMER_KEEP_TUPLE_ON_SPACE = 5 * 60 * 1000;// 5min = 5*60sec
-	public static Integer TIMER_TAKE_TUPLE_FROM_SPACE = 5 * 1000;// 5secs
+	public static Integer THREAD_SLEEP_TIME_MILLIS = 2000; // 2sec
+	public static Long TIMER_KEEP_UNDEFINED = Long.MAX_VALUE; // Undefined
+	public static Long TIMER_KEEP_ROOM      = new Long(30 * 1000); // 30sec
+	public static Long TIMER_KEEP_MESSAGE   = new Long(5 * 60 * 1000); // 5min
+	public static Long TIMER_TAKE_ADMIN     = new Long(3 * 1000); // 3sec
+	public static Long TIMER_TAKE_ROOM      = new Long(2 * 1000); // 2sec
+	public static Long TIMER_NO_WAIT        = JavaSpace.NO_WAIT; // 0sec
 }

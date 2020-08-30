@@ -52,6 +52,7 @@ public class AuthController implements Initializable {
     private void closeStage() {
     	chat.start();
     	config.start();
+    	ts.start();
         if(stage!=null) {
             stage.close();
         }
@@ -66,7 +67,7 @@ public class AuthController implements Initializable {
         	Integer port_number = Integer.valueOf(credentials.get(AuthConstants.HASHCODE_PORTNUMBER));
         	
         	ts.setup(ip_address, port_number, nickname);
-        	chat.chatLabelUser.setText(ts.get_nickname());
+        	chat.chatLabelUser.setText(ts.get_my_name());
         	if(!ts.connect()) {
         		main.closeApplication();
         		Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -76,6 +77,8 @@ public class AuthController implements Initializable {
         		alert.showAndWait();
         		Platform.exit();
 		        System.exit(0);
+        	}else {
+        		ts.init_admin_tuple();
         	}
         	
         	closeStage();

@@ -8,6 +8,9 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.TextAlignment;
 
 public class ChatConstants {
+	// Sleep
+	public static Integer THREAD_SLEEP_TIME_MILLIS = 500;
+	
 	// Components Style
 	public static String STYLE_CHAT_LABEL_USER = "-fx-font-family: 'Arial'; -fx-font-weight:bold; -fx-text-fill: #555555;";
 	public static String STYLE_CHAT_LABEL_CONTACT = "-fx-font-family: 'Arial'; -fx-font-weight:bold; -fx-text-fill: #555555;";
@@ -17,9 +20,6 @@ public class ChatConstants {
 	// Components Alignment
 	public static Pos TEXT_ALIGNMENT_LABEL_CHAT_USER = Pos.CENTER_RIGHT;
 	public static Pos TEXT_ALIGNMENT_LABEL_CHAT_CONTACT = Pos.CENTER_LEFT;
-	
-	// Sleep
-	public static Integer THREAD_SLEEP_TIME_MILLIS = 100;
 	
 	// Time Label
 	public static String SPACE_FOR_LABEL_TIME = "          ";

@@ -18,7 +18,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -74,7 +73,7 @@ public class ChatController extends Thread implements Initializable  {
 			try {
 				Thread.sleep(ChatConstants.THREAD_SLEEP_TIME_MILLIS);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				System.out.println("Error: ChatController (thread)");
 			}
 			
 			if(!ts.has_connection()) {
