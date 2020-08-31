@@ -233,8 +233,8 @@ public class ConfigComponentsArrayUtils {
 	}
 	
 	private void del_contact_button_on_all(String contact_name) {
-		for (int i=0; i<contacts_components.size(); i++) {
-			if(contacts_components.get(i).getText().equals(contact_name)) {
+		for (int i=0; i<contacts_components_on_all.size(); i++) {
+			if(contacts_components_on_all.get(i).getText().equals(contact_name)) {
 				VBox content = (VBox) room_all.getContent();
 				content.getChildren().remove(contacts_components_on_all.get(i));
 				contacts_components_on_all.remove(i);
