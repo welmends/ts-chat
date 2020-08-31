@@ -103,7 +103,7 @@ public class ChatController extends Thread implements Initializable  {
 		            	if (!storage.containsKey(storkey)) {
 		            		storage.put(storkey, new StorageMessages());
 		            	}
-		            	storage.get(storkey).push_back(message_received, text_time, ts.get_user_name(), StorageMessages.RECEIVE_PREFIX);
+		            	storage.get(storkey).push_back(message_received, text_time, sender_name, StorageMessages.RECEIVE_PREFIX);
 					}
 				});
 			}
