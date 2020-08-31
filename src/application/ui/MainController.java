@@ -5,8 +5,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import application.Main;
+import application.MainConstants;
 import application.ts.TupleSpace;
 import application.ui.constants.FXMLConstants;
+import application.ui.constants.ImageConstants;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -98,6 +100,8 @@ public class MainController implements Initializable {
             auth_stage = new Stage();
             popupController.setStage(auth_stage);
             if(this.main!=null) { auth_stage.initOwner(this.main.getPrimaryStage()); }
+            auth_stage.getIcons().add(ImageConstants.CHAT_TOP_ICON);
+            auth_stage.setTitle(MainConstants.TITLE_TEXT);
             auth_stage.initModality(Modality.WINDOW_MODAL);
             auth_stage.setResizable(false);
             auth_stage.setScene(scene);

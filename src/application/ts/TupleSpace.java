@@ -17,8 +17,6 @@ public class TupleSpace extends Thread {
     private String user_name;
     private String contact_name;
     private String room_name;
-    private String ip;
-    private Integer port;
     
     private Semaphore mutex;
     
@@ -26,8 +24,6 @@ public class TupleSpace extends Thread {
 	public TupleSpace() {
 		this.is_connected = false;
 		this.chat_type = null;
-		this.ip = "";
-		this.port = -1;
 		this.user_name = "";
 		this.contact_name = "";
 		this.room_name = "";
@@ -69,14 +65,9 @@ public class TupleSpace extends Thread {
 		}
 	}
 	
-	// Setup
-	public void setup(String ip, Integer port, String user_name) {
-		this.ip = ip;
-		this.port = port;
-		this.user_name = user_name;
-	}
-	
-    public Boolean connect(){
+	// Connection
+    public Boolean connect(String user_name){
+    	this.user_name = user_name;
     	this.lookup = new Lookup(JavaSpace.class);
 		this.space = (JavaSpace) this.lookup.getService();
 		this.space_admin = (JavaSpace) this.lookup.getService();
@@ -355,14 +346,6 @@ public class TupleSpace extends Thread {
     // Getters
     public Boolean has_connection() {
     	return this.is_connected;
-    }
-    
-    public String get_ip_address() {
-    	return this.ip;
-    }
-    
-    public Integer get_port_number() {
-    	return this.port;
     }
     
     public String get_user_name() {

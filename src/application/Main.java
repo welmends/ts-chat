@@ -33,9 +33,9 @@ public class Main extends Application {
 		root = loader.load();
 		
         this.primaryStage.getIcons().add(ImageConstants.CHAT_TOP_ICON);
-        this.primaryStage.setTitle("TS Chat");
+        this.primaryStage.setTitle(MainConstants.TITLE_TEXT);
 		this.primaryStage.setResizable(false);
-		this.primaryStage.setScene(new Scene(root, 700, 550));
+		this.primaryStage.setScene(new Scene(root, MainConstants.SCENE_WIDTH, MainConstants.SCENE_HEIGHT));
 		this.primaryStage.show();
 		this.primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 		    @Override public void handle(WindowEvent t) {

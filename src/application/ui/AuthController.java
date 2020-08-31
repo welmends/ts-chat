@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 
 import application.ts.TupleSpace;
 import application.ui.constants.AuthConstants;
+import application.ui.constants.ImageConstants;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,9 +18,7 @@ import javafx.stage.Stage;
 public class AuthController implements Initializable {
 
 	// FXML Variables
-    @FXML private TextField nicknameTF;
-    @FXML private TextField ipaddressTF;
-    @FXML private TextField portnumberTF;
+    @FXML private TextField usernameTF;
     @FXML private Button enterButton;
     
 	// COM Variables
@@ -42,6 +41,7 @@ public class AuthController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+    	enterButton.setGraphic(ImageConstants.ADD_BTN_ICON);
     	setEnterBtnPressedBehavior();
     }
 	
@@ -60,14 +60,13 @@ public class AuthController implements Initializable {
     
     private void setEnterBtnPressedBehavior() {
     	enterButton.setOnAction((event)->{
+    		if(!acquireCredentials()) {
+    			return;
+    		}
         	disableComponents(true);
-        	acquireCredentials();
-        	String username     = credentials.get(AuthConstants.HASHCODE_USERNAME);
-        	String ip_address   = credentials.get(AuthConstants.HASHCODE_IPADDRESS);
-        	Integer port_number = Integer.valueOf(credentials.get(AuthConstants.HASHCODE_PORTNUMBER));
+        	String username = credentials.get(AuthConstants.HASHCODE_USERNAME);
         	
-        	ts.setup(ip_address, port_number, username);
-        	if(!ts.connect()) {
+        	if(!ts.connect(username)) {
         		main.closeApplication();
         		Alert alert = new Alert(Alert.AlertType.ERROR);
         		alert.setTitle("Connection Fail");
@@ -95,29 +94,21 @@ public class AuthController implements Initializable {
     }
     
     private void disableComponents(Boolean b) {
+    	usernameTF.setDisable(b);
     	enterButton.setDisable(b);
-    	nicknameTF.setDisable(b);
-    	ipaddressTF.setDisable(b);
-    	portnumberTF.setDisable(b);
     }
     
-    private void acquireCredentials() {
+    private Boolean acquireCredentials() {
     	credentials.clear();
-    	if(nicknameTF.getText().equals("")) {
-    		credentials.put(AuthConstants.HASHCODE_USERNAME, AuthConstants.DEFAULT_NICKNAME);
-    	}else {
-    		credentials.put(AuthConstants.HASHCODE_USERNAME, nicknameTF.getText());
+    	if(!usernameTF.getText().equals("")) {
+    		credentials.put(AuthConstants.HASHCODE_USERNAME, usernameTF.getText());
+    		return true;
     	}
-    	if(ipaddressTF.getText().equals("")) {
-    		credentials.put(AuthConstants.HASHCODE_IPADDRESS, AuthConstants.DEFAULT_IPADDRESS);
-    	}else {
-    		credentials.put(AuthConstants.HASHCODE_IPADDRESS, ipaddressTF.getText());
-    	}
-    	if(portnumberTF.getText().equals("")) {
-    		credentials.put(AuthConstants.HASHCODE_PORTNUMBER, AuthConstants.DEFAULT_PORTNUMBER);
-    	}else {
-    		credentials.put(AuthConstants.HASHCODE_PORTNUMBER, portnumberTF.getText());
-    	}
-    	return;
+		Alert alert = new Alert(Alert.AlertType.WARNING);
+		alert.setTitle("Invalid username");
+		alert.setResizable(false);
+		alert.setHeaderText("The username is invalid. Try another one.");
+		alert.showAndWait();
+    	return false;
     }
 }

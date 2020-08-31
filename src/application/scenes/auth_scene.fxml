@@ -6,38 +6,39 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" style="-fx-background-color: #f7f7f7;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="vboxAuth" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" style="-fx-background-color: #dddddd;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox alignment="CENTER">
          <children>
-            <Label text="CREDENTIALS">
+            <Label text="Login" textFill="#444444">
                <font>
-                  <Font name="System Bold" size="15.0" />
+                  <Font name="Arial Bold" size="15.0" />
                </font>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
             </Label>
          </children>
+         <VBox.margin>
+            <Insets bottom="10.0" />
+         </VBox.margin>
       </HBox>
       <HBox alignment="CENTER">
          <children>
-            <Label prefWidth="80.0" text="Username" />
-            <TextField fx:id="nicknameTF" promptText="Anonymous" />
-         </children>
-      </HBox>
-      <HBox alignment="CENTER">
-         <children>
-            <Label prefWidth="80.0" text="IP Address" />
-            <TextField fx:id="ipaddressTF" promptText="localhost" />
-         </children>
-      </HBox>
-      <HBox alignment="CENTER">
-         <children>
-            <Label prefWidth="80.0" text="Port Number" />
-            <TextField fx:id="portnumberTF" promptText="9999" />
-         </children>
-      </HBox>
-      <HBox alignment="CENTER">
-         <children>
-            <Button fx:id="enterButton" mnemonicParsing="false" text="Enter" />
+            <TextField fx:id="usernameTF" alignment="CENTER" prefHeight="25.0" prefWidth="175.0" promptText="Username" style="-fx-background-radius: 5em;">
+               <font>
+                  <Font size="11.0" />
+               </font>
+               <HBox.margin>
+                  <Insets right="5.0" />
+               </HBox.margin></TextField>
+            <Button fx:id="enterButton" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-background-radius: 5em;" textFill="#444444">
+               <font>
+                  <Font name="Arial" size="13.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="5.0" />
+               </HBox.margin></Button>
          </children>
       </HBox>
    </children>
