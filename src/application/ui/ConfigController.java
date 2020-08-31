@@ -103,8 +103,14 @@ public class ConfigController extends Thread implements Initializable  {
 	
 	public void setRoomBtnPressedBehavior(TitledPane tp_room, Button b_enter_room, Button b_leave_room) {
 		b_enter_room.setOnAction((event)->{
-			ts.select_room(tp_room.getText());
+			do {
+				if(ts.select_room(tp_room.getText())) {
+					break;
+				}
+			}while(true);
+			
 			ts.set_chat_type(TupleSpaceConstants.ROOM_CHAT);
+			ts.set_room_name(tp_room.getText());
 			
 			chat.userImageView.setImage(ImageConstants.MULTI_USER_ICON);
 			chat.chatLabelContact.setText(ts.get_room_name());
@@ -115,7 +121,11 @@ public class ConfigController extends Thread implements Initializable  {
 		
 		b_leave_room.setOnAction((event)->{
 			if(ts.get_room_name().equals(tp_room.getText())) {
-				ts.deselect_room();
+				do {
+					if(ts.deselect_room()) {
+						break;
+					}
+				}while(true);
 				ts.set_chat_type(null);
 				ts.set_room_name("");
 				ts.set_contact_name("");
@@ -148,9 +158,12 @@ public class ConfigController extends Thread implements Initializable  {
 			if(room_name.equals("")) {
 				return;
 			}
-			if(!ts.add_room(room_name)) {
-				return;
-			}
+			do {
+				if(ts.add_room(room_name)) {
+					break;
+				}
+			}while(true);
+
         });
     }
 	

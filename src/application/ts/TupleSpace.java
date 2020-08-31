@@ -92,7 +92,11 @@ public class TupleSpace extends Thread {
         		}
         	}
     		//Update tuple_room
-        	deselect_room();
+			do {
+				if(deselect_room()) {
+					break;
+				}
+			}while(true);
 		} catch (Exception e) {
 			System.out.println("Error: TupleSpace (disconnect)");
 		}
@@ -203,22 +207,21 @@ public class TupleSpace extends Thread {
         			tuple_room.room_name = room_name;
         			tuple_room.contacts = new ArrayList<String>();
         			this.space.write(tuple_room, null, TupleSpaceConstants.TIMER_KEEP_ROOM);
-        		}else {
-        			return false;
         		}
         	}
 		} catch (Exception e) {
 			System.out.println("Error: TupleSpace (add_room)");
+			return false;
 		}
         return true;
     }
     
-    public void select_room(String room_name) {
+    public Boolean select_room(String room_name) {
     	try {
         	TupleRoom template_room = new TupleRoom();
         	TupleRoom tuple_room = new TupleRoom();
         	if(!this.room_name.equals("")) {
-        		template_room.room_name = this.room_name;
+        		template_room.room_name = get_room_name();
         		tuple_room = (TupleRoom) this.space.take(template_room, null, TupleSpaceConstants.TIMER_TAKE_ROOM);
         		if(tuple_room!=null) {
         			tuple_room.contacts.remove(this.user_name);
@@ -229,8 +232,7 @@ public class TupleSpace extends Thread {
             		}
         		}
         	}
-        	this.room_name = room_name;
-        	template_room.room_name = this.room_name;
+        	template_room.room_name = room_name;
     		tuple_room = (TupleRoom) this.space.take(template_room, null, TupleSpaceConstants.TIMER_TAKE_ROOM);
     		if(tuple_room!=null) {
     			tuple_room.contacts.add(this.user_name);
@@ -242,10 +244,12 @@ public class TupleSpace extends Thread {
     		}
 		} catch (Exception e) {
 			System.out.println("Error: TupleSpace (select_room)");
+			return false;
 		}
+    	return true;
     }
     
-    public void deselect_room() {
+    public Boolean deselect_room() {
         try {
         	// Common Room
         	TupleRoom template_room = new TupleRoom();
@@ -273,7 +277,9 @@ public class TupleSpace extends Thread {
         	}
 		} catch (Exception e) {
 			System.out.println("Error: TupleSpace (deselect_room)");
+			return false;
 		}
+        return true;
     }
     
     // Message Control
@@ -318,8 +324,11 @@ public class TupleSpace extends Thread {
         		template_message.room_name = get_room_name();
         		TupleMessage tuple_message = (TupleMessage) this.space.take(template_message, null, TupleSpaceConstants.TIMER_TAKE_MESSAGE);
             	if(tuple_message!=null) {
+            		List<String> contacts = get_contacts_list(get_room_name());
             		if(tuple_message.sender_name.equals(get_user_name())) {
-            			this.space.write(tuple_message, null, TupleSpaceConstants.TIMER_KEEP_MESSAGE);
+                		if(contacts.size()>1) {
+                			this.space.write(tuple_message, null, TupleSpaceConstants.TIMER_KEEP_MESSAGE);
+                		}
             			return null;
             		}
             		else if(tuple_message.receivers.contains(get_user_name())) {
@@ -327,7 +336,6 @@ public class TupleSpace extends Thread {
             			return null;
             		}else {
             			tuple_message.receivers.add(get_user_name());
-                		List<String> contacts = get_contacts_list(get_room_name());
                 		if(tuple_message.receivers.size()<contacts.size()-1) {
                 			this.space.write(tuple_message, null, TupleSpaceConstants.TIMER_KEEP_MESSAGE);
                 		}
