@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import application.ts.TupleSpaceConstants;
 import application.ui.ConfigController;
 import application.ui.constants.ConfigConstants;
 import javafx.beans.binding.Bindings;
@@ -19,7 +20,8 @@ public class ConfigComponentsArrayUtils {
 	private HashMap<String, String> hash;
 	private List<TitledPane> rooms_components;
 	private List<Button> contacts_components;
-	
+	private TitledPane room_all;
+	private List<Button> contacts_components_on_all;
 	
 	public ConfigComponentsArrayUtils(ConfigController config, VBox vboxOnScroll){
 		this.config = config;
@@ -27,13 +29,60 @@ public class ConfigComponentsArrayUtils {
 		this.hash = new HashMap<String, String>();
 		this.rooms_components = new ArrayList<TitledPane>();
 		this.contacts_components = new ArrayList<Button>();
+		this.room_all = null;
+		this.contacts_components_on_all = new ArrayList<Button>();
+	}
+	
+	public void init_all_room(String ts_user_name) {
+		TitledPane tp = new TitledPane();
+		tp.setText(TupleSpaceConstants.ALL_ROOM_TEXT);
+		tp.setStyle(ConfigConstants.TITLED_PANE_STYLE);
+		tp.setContentDisplay(ConfigConstants.ROOM_BUTTON_CONTENT_DISPLAY);
+		tp.setContent(new VBox());
+		
+		room_all = tp;
+		
+        vboxOnScroll.getChildren().add(tp);
+        
+        add_contact_button_on_all(ts_user_name, ts_user_name);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void updateComponentsList(String user_name, List<String> ts_rooms, HashMap<String, String> ts_hash) {
+	public void updateComponentsList(String user_name, List<String> ts_rooms, List<String> ts_contacts, HashMap<String, String> ts_hash) {
 		Boolean add_del;
 		
+		// All Room
+		for (int i=0; i<ts_contacts.size(); i++) {
+			add_del = true;
+			for (int j=0; j<contacts_components_on_all.size(); j++) {
+				if(ts_contacts.get(i).equals(contacts_components_on_all.get(j).getText())) {
+					add_del = false;
+					break;
+				}
+			}
+			if(add_del) {
+				add_contact_button_on_all(user_name, ts_contacts.get(i));
+			}
+		}
+		
+		for (int i=0; i<contacts_components_on_all.size(); i++) {
+			add_del = true;
+			for (int j=0; j<ts_contacts.size(); j++) {
+				if(contacts_components_on_all.get(i).getText().equals(ts_contacts.get(j))) {
+					add_del = false;
+					break;
+				}
+			}
+			if(add_del) {
+				del_contact_button_on_all(contacts_components_on_all.get(i).getText());
+			}
+		}
+		
+		// Common Rooms
 		for (int i=0; i<ts_rooms.size(); i++) {
+			if(ts_rooms.get(i).equals(TupleSpaceConstants.ALL_ROOM_TEXT)) {
+				continue;
+			}
 			add_del = true;
 			for (int j=0; j<rooms_components.size(); j++) {
 				if(ts_rooms.get(i).equals(rooms_components.get(j).getText())) {
@@ -59,6 +108,7 @@ public class ConfigComponentsArrayUtils {
 			}
 		}
 		
+		// Common Contacts
 		ts_hash.forEach((key, value) -> {
 			if(hash.containsKey(key)) {
 				if(!hash.get(key).equals(value)) {
@@ -138,6 +188,22 @@ public class ConfigComponentsArrayUtils {
 		hash.put(contact_name, room_name);
 	}
 	
+	private void add_contact_button_on_all(String ts_user_name, String contact_name) {
+		Button b = new Button();
+		b.setText(contact_name);
+		b.setStyle(ConfigConstants.CONTACT_BUTTON_STYLE);
+		b.setPrefWidth(ConfigConstants.CONTACT_BUTTON_PREF_WIDTH);
+		config.setContactBtnPressedBehavior(b);
+		if(contact_name.equals(ts_user_name)) {
+			b.setDisable(true);
+		}
+		
+		contacts_components_on_all.add(b);
+		
+		VBox content = (VBox) room_all.getContent();
+		content.getChildren().add(b);
+	}
+	
 	private void del_room_titledpane(String room_name) {
 		for (int i=0; i<rooms_components.size(); i++) {
 			if(rooms_components.get(i).getText().equals(room_name)) {
@@ -164,6 +230,17 @@ public class ConfigComponentsArrayUtils {
 		}
 		
 		hash.remove(contact_name, room_name);
+	}
+	
+	private void del_contact_button_on_all(String contact_name) {
+		for (int i=0; i<contacts_components.size(); i++) {
+			if(contacts_components.get(i).getText().equals(contact_name)) {
+				VBox content = (VBox) room_all.getContent();
+				content.getChildren().remove(contacts_components_on_all.get(i));
+				contacts_components_on_all.remove(i);
+        		break;
+			}
+		}
 	}
 	
 }

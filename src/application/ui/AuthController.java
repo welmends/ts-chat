@@ -50,9 +50,9 @@ public class AuthController implements Initializable {
     }
     
     private void closeStage() {
+    	ts.start();
     	chat.start();
     	config.start();
-    	ts.start();
         if(stage!=null) {
             stage.close();
         }

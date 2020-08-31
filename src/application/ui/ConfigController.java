@@ -61,6 +61,13 @@ public class ConfigController extends Thread implements Initializable  {
 	
 	@Override
 	public void run() {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				componentsArray_utils.init_all_room(ts.get_user_name());
+			}
+		});
+		
 		while(true) {
 			try {
 				Thread.sleep(ConfigConstants.THREAD_SLEEP_TIME_MILLIS);
@@ -69,12 +76,13 @@ public class ConfigController extends Thread implements Initializable  {
 			}
 			
 			List<String> ts_rooms = ts.get_rooms_list();
+			List<String> ts_contacts = ts.get_contacts_list();
 			HashMap<String, String> ts_hash = ts.get_hash_rooms_contacts();
 			
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
-					componentsArray_utils.updateComponentsList(ts.get_user_name(), ts_rooms, ts_hash);
+					componentsArray_utils.updateComponentsList(ts.get_user_name(), ts_rooms, ts_contacts, ts_hash);
 				}
 			});
 			

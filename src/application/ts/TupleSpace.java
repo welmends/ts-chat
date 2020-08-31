@@ -112,9 +112,14 @@ public class TupleSpace extends Thread {
         	TupleAdmin tuple_admin = (TupleAdmin) this.space.read(template_admin, null, TupleSpaceConstants.TIMER_TAKE_ADMIN);
         	if(tuple_admin==null) {
         		template_admin.rooms = new ArrayList<String>();
+        		template_admin.rooms.add(TupleSpaceConstants.ALL_ROOM_TEXT);
         		template_admin.contacts = new ArrayList<String>();
         		template_admin.contacts.add(user_name);
         		this.space.write(template_admin, null, TupleSpaceConstants.TIMER_KEEP_UNDEFINED);
+    			TupleRoom tuple_room = new TupleRoom();
+    			tuple_room.room_name = TupleSpaceConstants.ALL_ROOM_TEXT;
+    			tuple_room.contacts = new ArrayList<String>();
+    			this.space.write(tuple_room, null, TupleSpaceConstants.TIMER_KEEP_UNDEFINED);
         	}else {
         		if(tuple_admin.contacts.contains(user_name)) {
         			return false;

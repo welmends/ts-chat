@@ -14,4 +14,6 @@ public class TupleSpaceConstants {
 	
 	public static Boolean ROOM_CHAT = true;
 	public static Boolean CONTACT_CHAT = false;
+	
+	public static String ALL_ROOM_TEXT = "All";
 }
