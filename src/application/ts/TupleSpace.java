@@ -49,6 +49,9 @@ public class TupleSpace extends Thread {
 	        	if(tuple_admin!=null) {
 	        		TupleRoom template_room = new TupleRoom();
 	        		for (int i=0; i<tuple_admin.rooms.size(); i++) {
+	        			if(tuple_admin.rooms.get(i).equals(TupleSpaceConstants.ALL_ROOM_TEXT)) {
+	        				continue;
+	        			}
 						template_room.room_name = tuple_admin.rooms.get(i);
 						TupleRoom tuple_room = (TupleRoom) this.space_admin.read(template_room, null, TupleSpaceConstants.TIMER_NO_WAIT);
 						if(tuple_room==null) {
@@ -140,6 +143,9 @@ public class TupleSpace extends Thread {
     	List<String> rooms = get_rooms_list();
     	List<String> contacts;
     	for (int i=0; i<rooms.size(); i++) {
+    		if(rooms.get(i).equals(TupleSpaceConstants.ALL_ROOM_TEXT)) {
+    			continue;
+    		}
 			contacts = get_contacts_list(rooms.get(i));
 	    	for (int j=0; j<contacts.size(); j++) {
 	    		hash.put(contacts.get(j), rooms.get(i));
@@ -250,13 +256,28 @@ public class TupleSpace extends Thread {
     
     public void deselect_room() {
         try {
+        	// Common Room
         	TupleRoom template_room = new TupleRoom();
         	template_room.room_name = get_room_name();
         	TupleRoom tuple_room = (TupleRoom) this.space.take(template_room, null, TupleSpaceConstants.TIMER_TAKE_ROOM);
         	if(tuple_room!=null) {
         		if(tuple_room.contacts.contains(get_user_name())) {
         			tuple_room.contacts.remove(get_user_name());
-        			this.space.write(tuple_room, null, TupleSpaceConstants.TIMER_KEEP_ROOM);
+            		if(tuple_room.contacts.size()==0) {
+            			this.space.write(tuple_room, null, TupleSpaceConstants.TIMER_KEEP_ROOM);
+            		}else {
+            			this.space.write(tuple_room, null, TupleSpaceConstants.TIMER_KEEP_UNDEFINED);
+            		}
+        		}
+        	}
+        	// All Room
+        	template_room = new TupleRoom();
+        	template_room.room_name = TupleSpaceConstants.ALL_ROOM_TEXT;
+        	tuple_room = (TupleRoom) this.space.take(template_room, null, TupleSpaceConstants.TIMER_TAKE_ROOM);
+        	if(tuple_room!=null) {
+        		if(tuple_room.contacts.contains(get_user_name())) {
+        			tuple_room.contacts.remove(get_user_name());
+        			this.space.write(tuple_room, null, TupleSpaceConstants.TIMER_KEEP_UNDEFINED);
         		}
         	}
 		} catch (Exception e) {
